@@ -9,7 +9,9 @@ use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\SubCategoryController;
 use App\Http\Controllers\FrontEnd\CardController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\FrontEnd\CustomerItemController;
 use App\Http\Controllers\FrontEnd\CustomerOrderController;
+use App\Http\Controllers\FrontEnd\WelcomeController;
 use App\Http\Controllers\HomeController;
 
 /*
@@ -23,10 +25,14 @@ use App\Http\Controllers\HomeController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [WelcomeController::class, 'index']);
 
+// Route for item
+Route::controller(CustomerItemController::class)->name('item.')->prefix('item')->group(function () {
+    Route::get('/items', 'index')->name('index');
+    Route::get('/{id}', 'show')->name('show');
+});
+ 
 /* 
 Routes for customer orders
 Just for authenticated user
@@ -38,9 +44,9 @@ Routes for card, where we use session 'items' for transporting data
  */
 Route::controller(CardController::class)->name('card.')->prefix('card')->group(function () {
     Route::get('/show', 'showCard')->name('show');
-    Route::get('/store', 'storeInSession')->name('store');
-    Route::get('/update-item', 'updateItem')->name('update');
-    Route::get('/remove-item', 'removeItem')->name('remove');
+    Route::post('/store', 'storeInSession')->name('store');
+    Route::post('/update-item', 'updateItem')->name('update');
+    Route::post('/remove-item', 'removeItem')->name('remove');
 });
 
 // admin routes,

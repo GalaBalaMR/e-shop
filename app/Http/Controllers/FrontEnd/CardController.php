@@ -17,39 +17,55 @@ class CardController extends Controller
         $pieces = array();
         $prices = array();
         $mix = array();
+        $items_data = array();
+        $full_price = 0;
+        $items_number = 0;
 
-        foreach(session('items') as $item)
+        if(session()->has('items'))
         {
-            // find model
-            $item_Col = Item::find($item['id']);
 
-            // sum price
-            $item_price = $item_Col->price;
-            $item_price *= $item['pcs'];
+            foreach(session('items') as $item)
+            {
+                // find model
+                $item_Col = Item::find($item['id']);
+    
+                // sum price
+                $item_price = $item_Col->price;
+                $item_price *= $item['pcs'];
+    
+                /*  
+                change model to array for foreach loop in view
+                other types(object..) alternative has lots of loop which case in error
+                 */
+                
+                $item_Col->toArray();
+    
+    
+                $prices[$item['id']] = $item_price;
+    
+                $pieces[$item['id']] = $item['pcs'];
+    
+                // make asoc array which send to the view    
+                $items_data[] = [
+                    'item' => $item_Col,
+                    'fullPrice' => $item_price,
+                    'pcs' => $item['pcs']
+                ];
 
-            /*  
-            change model to array for foreach loop in view
-            other types(object..) alternative has lots of loop which case in error
-             */
-            
-            $item_Col->toArray();
+                $full_price +=  $item_price;
 
+                $items_number += 1;
+    
+    
+            }; 
 
-            $prices[$item['id']] = $item_price;
+            return view('FrontEnd.card.show', compact('items_data', 'full_price', 'items_number'));
+        }else{
 
-            $pieces[$item['id']] = $item['pcs'];
+            return view('FrontEnd.card.show', compact('items_data', ));
 
-            // make asoc array which send to the view    
-            $items_data[] = [
-                'item' => $item_Col,
-                'fullPrice' => $item_price,
-                'pcs' => $item['pcs']
-            ];
+        };
 
-
-        }; 
-
-        return view('card', compact('items_data'));
     }
 
     /* 
@@ -63,8 +79,8 @@ class CardController extends Controller
         ]);
         //session()->put('items', []);
 
-        $item_id = $request->id;
-        $item_pcs = $request->pcs;
+        $item_id = $request->item_id;
+        $item_pcs = $request->item_pcs;
 
         Session::push('items' , [
             'id' => $item_id,
