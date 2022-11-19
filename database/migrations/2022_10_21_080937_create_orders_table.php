@@ -17,6 +17,8 @@ class CreateOrdersTable extends Migration
             $table->id();
             $table->text('items_data');
             $table->integer('full_price');
+            $table->string('delivery');
+            $table->string('other_address')->nullable();
             $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
