@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ItemStoreRequest;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\UploadedFile;
 
 class ItemController extends Controller
 {
@@ -17,9 +18,9 @@ class ItemController extends Controller
      */
     public function index()
     {
-        $items = Item::with(['category', 'subCategory']);
+        $items = Item::all();
 
-        return view('admin.item.index', compact('items'));
+        return view('admin.items.index', compact('items'));
     }
 
     /**
@@ -29,7 +30,7 @@ class ItemController extends Controller
      */
     public function create()
     {
-        return view('admin.item.create');
+        return view('admin.items.create');
     }
 
     /**
@@ -43,7 +44,7 @@ class ItemController extends Controller
         $request->validated();
 
         $images=array();
-        if($files=$request->file('images')){
+        if($files=$request->file('img')){
             foreach($files as $file){
                 $image = $file->store('public/item');
                 $images[]=$image;
@@ -56,7 +57,7 @@ class ItemController extends Controller
             'long_description' => $request->long_description,
             'price' => $request->price,
             'numbers' => $request->numbers,
-            'img' => implode("|",$images),
+            'img' => implode("|", $images),
         ]);
 
         if($request->ajax())
@@ -65,7 +66,7 @@ class ItemController extends Controller
                                      'status'=> '1'
                                     ]);
         }
-        return back()->with(['info' => 'Podarilo sa pridať položku', 'type' => 'success']);
+        return redirect()->route('admin.items.index')->with(['info' => 'Podarilo sa pridať položku', 'type' => 'success']);
     }
 
     /**
@@ -76,7 +77,7 @@ class ItemController extends Controller
      */
     public function show(Item $item)
     {
-        return view('admin.item.show', compact('item'));
+        return view('admin.items.show', compact('item'));
     }
 
     /**
@@ -87,7 +88,8 @@ class ItemController extends Controller
      */
     public function edit(Item $item)
     {
-        return view('admin.item.edit', compact('item'));
+        $item = $item;
+        return view('admin.items.edit', compact('item'));
     }
 
     /**
@@ -97,18 +99,24 @@ class ItemController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(ItemStoreRequest $request, Item $item)
+    public function update(Request $request, Item $item)
     {
-        $request->validated();
+        $request->validate([
+            'name' => 'required',
+            'short_description' => 'required|max:255',
+            'long_description' => 'required',
+            'price' => 'required',
+            'numbers' => 'required',
+        ]);
 
         $images = $item->img;
 
-        if($request->hasFile('images'))
+        if($request->hasFile('img'))
         {
             Storage::delete(explode('|', $item->img));
             $images = array();
 
-            if($files = $request->file('images'))
+            if($files = $request->file('img'))
             {
                 foreach($files as $file)
                 {
@@ -136,7 +144,7 @@ class ItemController extends Controller
                                      'status'=> '1'
                                     ]);
         }
-        return back()->with(['info' => 'Podarilo sa upraviť položku', 'type' => 'success']);
+        return redirect()->route('admin.items.index')->with(['info' => 'Podarilo sa upraviť položku', 'type' => 'success']);
 
     }
 

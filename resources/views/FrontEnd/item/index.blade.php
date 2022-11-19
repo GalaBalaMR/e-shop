@@ -52,13 +52,30 @@
                 @endif
 
                     <div class="portfolio-wrap">
-                        <img src="{{ Storage::url('public/img/portfolio/portfolio-1.jpg') }}" class="img-fluid" alt="">
+                        @foreach(explode('|',$item->img) as $img)
+                        @if($loop->first)
+                        <img src="{{ Storage::url($img) }}" class="img-fluid" alt="">
+                        @endif
+                        @endforeach
                         <div class="portfolio-info">
                         <h4>{{ $item->name }}</h4>
                         <p>{{ $item->short_description }}</p>
                         <div class="portfolio-links">
-                            <a href="{{ Storage::url('public/img/portfolio/portfolio-1.jpg') }}" data-gallery="portfolioGallery" class="portfolio-lightbox" title="{{ $item->name }}"><i class="bx bx-plus"></i></a>
+                            
+                            {{-- foreach pictures and show just first --}}
+                            @foreach(explode('|',$item->img) as $img)
+                                @if($loop->first)
+                                    <a href="{{ Storage::url($img) }}" data-gallery="portfolioGallery" class="portfolio-lightbox" title="{{ $item->name }}"><i class="bx bx-plus"></i></a>
+                                @endif
+                            @endforeach
+
                             <a href="{{ route('item.show', ['id' => $item->id]) }}" title="More Details"><i class="bx bx-link"></i></a>
+                            <form action="{{ route('card.store') }}" method="post">
+                                @csrf
+                                <input type="number" name="item_pcs" id="" min="0">
+                                <input type="hidden" name="item_id" value="{{ $item->id }}">
+                                <button type="submit" class="btn btn-warning rounded-pill">Pridať do košíku</button>
+                            </form>
                         </div>
                         </div>
                     </div>

@@ -1,18 +1,21 @@
 <?php
 
+use App\Http\Controllers\Admin\AddressController as AdminAddressController;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Admin\ItemController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\OrderController;
-use App\Http\Controllers\Admin\SubCategoryController;
 use App\Http\Controllers\FrontEnd\CardController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\FrontEnd\WelcomeController;
+use App\Http\Controllers\Admin\SubCategoryController;
+use App\Http\Controllers\FrontEnd\AddressController;
 use App\Http\Controllers\FrontEnd\CustomerItemController;
 use App\Http\Controllers\FrontEnd\CustomerOrderController;
-use App\Http\Controllers\FrontEnd\WelcomeController;
-use App\Http\Controllers\HomeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,10 +32,18 @@ Route::get('/', [WelcomeController::class, 'index']);
 
 // Route for item
 Route::controller(CustomerItemController::class)->name('item.')->prefix('item')->group(function () {
-    Route::get('/items', 'index')->name('index');
+    Route::get('/', 'index')->name('index');
     Route::get('/{id}', 'show')->name('show');
 });
- 
+
+// Route for address
+Route::controller(AddressController::class)->name('address.')->prefix('address')->group(function () {
+    Route::get('/', 'createUserAddress')->name('createUserAddress');
+    Route::post('/', 'storeUserAddress')->name('storeUserAddress');
+    Route::get('/order-address', 'createOrderAddress')->name('createOrderAddress');
+    Route::post('/order-address', 'storeOrderAddress')->name('storeOrderAddress');
+}); 
+
 /* 
 Routes for customer orders
 Just for authenticated user
@@ -58,6 +69,7 @@ Route::middleware(['role:Admin|Service|Manager'])->name('admin.')->prefix('admin
     Route::resource('/subcategories' , SubCategoryController::class);
     Route::resource('/items' , ItemController::class);
     Route::resource('/orders' , OrderController::class);
+    Route::resource('/addresses' , AdminAddressController::class);
 });
 
 Auth::routes();

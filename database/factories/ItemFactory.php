@@ -15,7 +15,7 @@ class ItemFactory extends Factory
     {
         return [
             'name' => $this->faker->name(),
-            'img' => $this->faker->sentence(),
+            'img' => 'public/seed/empty.jpg|public/seed/empty.jpg|public/seed/empty.jpg',
             'numbers' => $this->faker->numberBetween(1, 249),
             'price' => $this->faker->numberBetween(1, 249),
 

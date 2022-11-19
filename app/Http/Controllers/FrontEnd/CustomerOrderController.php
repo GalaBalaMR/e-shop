@@ -4,6 +4,7 @@ namespace App\Http\Controllers\FrontEnd;
 
 use App\Http\Controllers\Controller;
 use App\Mail\OrderConfirm;
+use App\Models\Address;
 use App\Models\Item;
 use App\Models\Order;
 use App\Models\User;
@@ -37,12 +38,6 @@ class CustomerOrderController extends Controller
         $pieces = array();
         $prices = array();
         $mix = array();
-
-        // Session::push('items', [
-        //     'id' => '6',
-        //     'pcs' => '6',
-        // ]);
-        // Session::save();
 
         foreach(session('items') as $item)
         {
@@ -87,6 +82,39 @@ class CustomerOrderController extends Controller
     public function store(Request $request)
     {
 
+        $request->validate([
+            'delivery' => 'required',
+            'items'    => 'required'
+        ]);
+
+        // IFs FOR ADDRESS---------------------------------------------------------------------
+
+        // if is set check for different address and address_id not exist, return view for make the address
+        // else if is set check for different address and address_id exist, make variable address_id
+        if(isset($request->change_address) && isset($request->address_id) == false )
+        {
+            return redirect()->route('address.createOrderAddress')->with(['delivery' => $request->delivery]);
+        }elseif(isset($request->change_address) && isset($request->address_id))
+        {
+            $address_id = $request->address_id;
+        }
+
+        /* 
+        if is set address and change address not exist, make address_id
+        elseif address is not set and change not exist, redirect to address.makeShow
+        */
+        if(isset(auth()->user()->address) && isset($request->change_address) == false )
+        {
+            $address_id = auth()->user()->address->id;
+        }elseif(isset(auth()->user()->address) == false && isset($request->change_address) == false )
+        {
+            return redirect()->route('address.createUserAddress');
+        };
+
+        // END ADDRESS IF-----------------------------------------------------
+
+
+        // MAKE ORDER---------------------------------------------------------
         $items = array();// assoc array which save in db with info about items
         $ids = array();//array of item's id for atachment(order+items)
         $full_price = 0;
@@ -107,14 +135,57 @@ class CustomerOrderController extends Controller
             $full_price += $data['item_full_price'];
         };
 
-        $order = Order::create([
-            'items_data' => json_encode($items),
-            'full_price' => $full_price,
-            'user_id' => Auth::id()
-        ]);
+        // For delivery type, count delivery price with full_price
+        if($request->delivery === 'standard')
+        {
+            $full_price += 5;
+            $order = Order::create([
+                'items_data' => json_encode($items),
+                'full_price' => $full_price,
+                'user_id' => Auth::id(),
+                'delivery' => 'standard'
+            ]);
+        }elseif($request->delivery == 'dhl')
+        {
+            $full_price += 3;
+            $order = Order::create([
+                'items_data' => json_encode($items),
+                'full_price' => $full_price,
+                'user_id' => Auth::id(),
+                'delivery' => 'dhl'
+            ]);
+        }elseif($request->delivery == '123kurier')
+        {
+            $full_price += 3;
+            $order = Order::create([
+                'items_data' => json_encode($items),
+                'full_price' => $full_price,
+                'user_id' => Auth::id(),
+                'delivery' => '123kurier'
+            ]);
+        }
+        
 
         // Connect order with items
         $order->items()->sync($ids);
+
+        // END MAKE ORDER-----------------------------------------------------------
+
+        // CONNECT ORDER WITH ADDRESS AND SUBSTRACT ITEM----------------------------
+
+        // for finding adrress and connect it with order, if it is other address than user's
+        if(isset($request->change_address))
+        {
+            $address = Address::find($address_id);
+
+            $address->order_id = $order->id;
+            $address->save();
+
+            $order->other_address = 'yes';
+            $order->save();
+        }
+
+        
 
         // Send mail to customer about success order
         Mail::to( $order->user->email)->send( new OrderConfirm($order));

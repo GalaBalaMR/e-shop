@@ -25,17 +25,11 @@
             <div class="portfolio-details-slider swiper">
                 <div class="swiper-wrapper align-items-center">
 
-                <div class="swiper-slide">
-                    <img src="assets/img/portfolio/portfolio-1.jpg" alt="">
-                </div>
-
-                <div class="swiper-slide">
-                    <img src="assets/img/portfolio/portfolio-2.jpg" alt="">
-                </div>
-
-                <div class="swiper-slide">
-                    <img src="assets/img/portfolio/portfolio-3.jpg" alt="">
-                </div>
+                @foreach(explode('|',$item->img) as $img)
+                    <div class="swiper-slide">
+                        <img src="{{ Storage::url($img) }}" alt="">
+                    </div>
+                @endforeach
 
                 </div>
                 <div class="swiper-pagination"></div>
@@ -54,6 +48,15 @@
                 <li><strong>Na sklade:</strong>: {{ $item->numbers }}</li>
                 <li><strong>Pridaný: </strong>: {{ Carbon\Carbon::parse($item->created_at)->diffForHumans() }}</li>
                 <li><strong>Cena:</strong>: {{ $item->price }}</li>
+                <li>
+                    <form action="{{ route('card.store') }}" method="post" class="d-flex justify-content-between">
+                        @csrf
+                        <input type="number" name="item_pcs" id="" class="w-25"  min="0">
+                        <input type="hidden" name="item_id" value="{{ $item->id }}">
+                        <button type="submit" class="btn btn-warning rounded-pill">Pridať do košíku</button>
+                    </form>
+                </li>
+                {{-- <li>{{ $items_number }}</li> --}}
                 </ul>
             </div>
             <div class="portfolio-description">

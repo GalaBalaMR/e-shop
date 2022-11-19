@@ -13,7 +13,13 @@
                 <div class="p-5">
                     <div class="d-flex justify-content-between align-items-center mb-5">
                     <h1 class="fw-bold mb-0 text-black">Shopping Cart</h1>
-                    <h6 class="mb-0 text-muted">3 items</h6>
+                    <h6 class="mb-0 text-muted">
+                        @if (isset($items_number) && $items_number != 0)
+                            Počet položiek: {{ $items_number }}.
+                        @else
+                            Nepridal si žiadnu položku.
+                        @endif
+                    </h6>
                     </div>
                     <hr class="my-4">
 
@@ -21,9 +27,15 @@
                     @forelse($items_data as $item)
                     <div class="row mb-4 d-flex justify-content-between align-items-center">
                         <div class="col-md-2 col-lg-2 col-xl-2">
-                            <img
-                            src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-shopping-carts/img5.webp"
-                            class="img-fluid rounded-3" alt="Cotton T-shirt">
+                            
+                            {{-- foreach pictures and show just first --}}
+                            @forelse(explode('|',$item['item']['img']) as $img)
+                                @if($loop->first)
+                                    <img src="{{ Storage::url($img) }}" class="img-fluid rounded-3" alt="Cotton T-shirt">
+                                @endif
+                            @empty
+                            <p>Bez obrázku</p>
+                            @endforelse
                         </div>
                         <div class="col-md-3 col-lg-2 col-xl-2">
                             <h6 class="text-muted">item</h6>
@@ -39,25 +51,29 @@
                                 </button>
     
                                 <input id="form1" min="0" name="item_pcs" value="{{ $item['pcs'] }}" type="number"
-                                class="form-control form-control-sm" />
+                                class="form-control form-control-sm no-arrow" />
     
                                 <button class="btn btn-link px-0"
                                 onclick="this.parentNode.querySelector('input[type=number]').stepUp(); return false">
                                 <i class="bi bi-plus"></i>
                                 </button>
                             </div>
-                            <button type="submit" class="d-block mx-auto">
-                                zmeniť
+                            <button type="submit" class="d-block mx-auto btn btn-warning rounded-pill p-1 py-0 text-light">
+                                Zmeniť
                             </button>
                         </form>
-                        <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1">
+                        <div class="col-md-3 col-lg-2 col-xl-2 p-0">
                             <h6 class="mb-0">Kus za € {{ $item['item']['price'] }}</h6>
                         </div>
-                        <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1">
+                        <div class="col-md-3 col-lg-2 col-xl-2 p-0">
                             <h6 class="mb-0">Dokopy: € {{ $item['fullPrice'] }}</h6>
                         </div>
-                        <div class="col-md-1 col-lg-1 col-xl-1 text-end">
-                            <a href="#!" class="text-muted"><i class="fas fa-times"></i></a>
+                        <div class="col-md-1 col-lg-1 col-xl-1">
+                            <form action="{{ route('card.remove') }}" method="post">
+                                @csrf
+                                <input type="hidden" name="item_id" value="{{ $item['item']['id'] }}">
+                                <button type="submit" class=" btn link-danger decoration-none"><i class="bi bi-trash"></i></button>
+                            </form>
                         </div>
                     </div>
 
@@ -69,8 +85,8 @@
 
 
                     <div class="pt-5">
-                    <h6 class="mb-0"><a href="#!" class="text-body"><i
-                            class="fas fa-long-arrow-alt-left me-2"></i>Back to shop</a></h6>
+                    <h6 class="mb-0"><a href="{{ route('item.index') }}" class="text-body"><i
+                            class="fas fa-long-arrow-alt-left me-2"></i>Späť do obchodu</a></h6>
                     </div>
                 </div>
                 </div>
@@ -81,44 +97,77 @@
 
                     <div class="d-flex justify-content-between mb-4">
                     
-                        @if(isset($items_number))
-                        <h5 class="text-uppercase">{{ $items_number }} položiek.</h5>
-                        <h5>€ {{ $full_price }}</h5>
+                        @if(isset($items_number) && $items_number != "1")
+
+                            <h5 class="text-uppercase">{{ $items_number }} položiek.</h5>
+                            <h5>€ {{ $full_price }}</h5>
+
+                        @elseif(isset($items_number) == "1")
+
+                            <h5 class="text-uppercase">{{ $items_number }} položka.</h5>
+                            <h5>€ {{ $full_price }}</h5>
+
+                        @elseif(isset($items_number) == "2" && isset($items_number) == "3" && isset($items_number) == "4")
+
+                            <h5 class="text-uppercase">{{ $items_number }} položky.</h5>
+                            <h5>€ {{ $full_price }}</h5>
+
                         @else
-                        <h5 class="text-uppercase">Nie je pridaná žiadna položka.</h5>
-                        <h5>€ 0,00</h5>
+
+                            <h5 class="text-uppercase">Nie je pridaná žiadna položka.</h5>
+                            <h5>€ 0,00</h5>
+
                         @endif
                     </div>
 
                     <h5 class="text-uppercase mb-3">Shipping</h5>
 
-                    <div class="mb-4 pb-2">
-                    <select class="select">
-                        <option value="1">Standard-Delivery- €5.00</option>
-                        <option value="2">Two</option>
-                        <option value="3">Three</option>
-                        <option value="4">Four</option>
-                    </select>
-                    </div>
+                    {{-- form for create order --}}
+                    <form action="{{ route('orders.store') }}" method="post">
+                        <div class="mb-4 pb-2">
+                        <select class="select" name="delivery">
+                            @if(session()->has('delivery'))
+                            <option value="{{ session()->get('delivery') }}">{{ session()->get('delivery') }}</option>
+                            @endif
+                            <option value="standard- 5€">Standard-Delivery- €5.00</option>
+                            <option value="dhl- 3€">DHL- €4.00</option>
+                            <option value="123kurier- 3€">123Kuriér- €3.00</option>
+                        </select>
+                        </div>
 
-                    <h5 class="text-uppercase mb-3">Give code</h5>
+                        <hr class="my-4">
+                        
+                        <div class="form-check">
+                            {{-- if has session address id, check other address --}}
+                            @if(session()->has('address_id'))
+                                <input class="form-check-input" type="checkbox" name="change_address" value="1" id="flexCheckDefault" checked>
+                            @else
+                                <input class="form-check-input" type="checkbox" name="change_address" value="1" id="flexCheckDefault">
+                            @endif
+                            <label class="form-check-label" for="flexCheckDefault">
+                                Iná adresa
+                            </label>
+                        </div>
 
-                    <div class="mb-5">
-                    <div class="form-outline">
-                        <input type="text" id="form3Examplea2" class="form-control form-control-lg" />
-                        <label class="form-label" for="form3Examplea2">Enter your code</label>
-                    </div>
-                    </div>
+                        <div class="d-flex justify-content-between mb-5">
+                        <h5 class="text-uppercase">Total price</h5>
+                        <h5>€ {{ $full_price }}</h5>
+                        </div>
+                    
+                        @csrf
+                        @forelse ($items_data as $item)
+                            <input type="hidden" name="items[]" value="{{ json_encode(['item_id' => $item['item']['id'],'item_pcs' => $item['pcs'],'item_price' => $item['item']['price'],'item_full_price' =>$item['fullPrice']]) }}">
+                            
+                        @empty
+                        @endforelse
 
-                    <hr class="my-4">
+                        @if(isset($address_id))
+                            <input type="hidden" name="address_id" value="{{ $address_id }}">
+                        @endif
+                        <button type="submit" class="btn btn-dark btn-block btn-lg"
+                        data-mdb-ripple-color="dark">Objednať</button>
+                    </form>
 
-                    <div class="d-flex justify-content-between mb-5">
-                    <h5 class="text-uppercase">Total price</h5>
-                    <h5>€ 137.00</h5>
-                    </div>
-
-                    <button type="button" class="btn btn-dark btn-block btn-lg"
-                    data-mdb-ripple-color="dark">Register</button>
 
                 </div>
                 </div>

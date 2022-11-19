@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class CategoryFactory extends Factory
@@ -16,7 +17,7 @@ class CategoryFactory extends Factory
         return [
             'name' => $this->faker->word(),
             'description' => $this->faker->paragraphs(2, true),
-            'img' => $this->faker->sentence(),
+            'img' => 'public/seed/empty.jpg',
         ];
     }
 }

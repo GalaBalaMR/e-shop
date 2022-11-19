@@ -16,7 +16,7 @@ class SubCategoryFactory extends Factory
         return [
             'name' => $this->faker->word(),
             'description' => $this->faker->paragraphs(2, true),
-            'img' => $this->faker->sentence(),
+            'img' => 'public/seed/empty.jpg',
         ];
     }
 }

@@ -6,6 +6,8 @@ namespace App\Http\Controllers\FrontEnd;
 use App\Models\Item;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Order;
+use App\Models\User;
 use Illuminate\Support\Facades\Session;
 
 class CardController extends Controller
@@ -14,13 +16,14 @@ class CardController extends Controller
     // with item from session
     public function showCard()
     {
+        
         $pieces = array();
         $prices = array();
         $mix = array();
         $items_data = array();
         $full_price = 0;
         $items_number = 0;
-
+        
         if(session()->has('items'))
         {
 
@@ -53,18 +56,28 @@ class CardController extends Controller
                 ];
 
                 $full_price +=  $item_price;
-
-                $items_number += 1;
     
-    
-            }; 
+            };
+            // Session::forget('items');
 
-            return view('FrontEnd.card.show', compact('items_data', 'full_price', 'items_number'));
-        }else{
+            // for count session items
+            foreach(session('items') as $item)
+            {
+                $items_number+= 1;
+            }
+        }
 
-            return view('FrontEnd.card.show', compact('items_data', ));
+        /* 
+            when make new address, send new address id to view card,
+            where with isset can sent it to order.create
+        */
+        if(session()->has('address_id'))
+        {
+            $address_id = session()->get('address_id');
+            return view('FrontEnd.card.show', compact('items_data', 'full_price', 'items_number', 'address_id')); 
+        }
 
-        };
+        return view('FrontEnd.card.show', compact('items_data', 'full_price', 'items_number'));
 
     }
 
@@ -77,23 +90,65 @@ class CardController extends Controller
             'item_id' => 'required',
             'item_pcs' => 'required'
         ]);
-        //session()->put('items', []);
 
         $item_id = $request->item_id;
         $item_pcs = $request->item_pcs;
 
         Session::push('items' , [
             'id' => $item_id,
+            'pcs' => 0,
+        ]);
+
+        $session_items = session('items');
+        $items_number = 0;
+
+        // if session exist, foreach it and compare its id, with request
+        // for not having duplicate in session, if is there some, count it pcs with request pcs and delete it
+        if(session()->has('items'))
+        {
+            foreach($session_items as $index => $item)
+            {
+                if($item['id'] == $item_id)
+                {
+                    // if is ids same, count item pcs form old session and from request
+                    $item_pcs += $item['pcs'];
+                    // delete old item and make new item and push it in arr
+                    unset($session_items[$index]);
+
+                }
+            } 
+            
+        }
+
+        // after control, if is not duplicate, we can add request to session
+        array_push($session_items , [
+            'id' => $item_id,
             'pcs' => $item_pcs,
         ]);
-        Session::save(); 
+
+        // push $session_item in the session
+        session()->put("items", $session_items);
+
+        Session::save();
+        
+        // count  session items
+        foreach($session_items as $item)
+        {
+            $items_number+= 1;
+        }
+        
+        // after add session just remove and add new session with actual number 
+        Session::forget('items_number');
+        Session::put('items_number' , $items_number);
+
         // end this function
         if($request->ajax())
         {
             return response()->json(['flash' => 'Podarilo sa pridať produkt.',
                                      'status'=> '1'
                                     ]);
-        }
+        };
+
         return back()->with(['info' => 'Podarilo sa pridať produkt.', 'type' => 'success']);
     }
 
@@ -153,22 +208,31 @@ class CardController extends Controller
             'item_id' => 'required'
         ]);
 
-        $session_item = session('items');
+        $session_items = session('items');
 
         /* find item in session items base on item_id */
-        foreach($session_item as $index => $item)
+        foreach($session_items as $index => $item)
         {
-            if($item['id'] == "1")
+            if($item['id'] == $request->item_id)
             {
-                unset($session_item[$index]);
+                unset($session_items[$index]);
             };
         };
-        session()->put("items", $session_item);
+        session()->put("items", $session_items);
         // Session::forget('items');
         
         Session::save();
+        // count  session items
+        $items_number = 0;
+        foreach($session_items as $item)
+        {
+            $items_number+= 1;
+        }
+        
+        // after add session just remove and add new session with actual number 
+        Session::forget('items_number');
+        Session::put('items_number' , $items_number);
 
-        // Session::save();
         if($request->ajax())
         {
             return response()->json(['flash' => 'Podarilo sa vymazať produkt.',

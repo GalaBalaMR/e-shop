@@ -70,11 +70,19 @@
                 <i class="bi bi-list mobile-nav-toggle"></i>
             </nav><!-- .navbar -->
 
-            {{-- for shopping card --}}
-            <a href="{{ route('card.show') }}" class="display-6 text-light"><i class="bi bi-cart"></i></a>
-
+            
             <a href="#about" class="get-started-btn scrollto">Get Started</a>
-
+            
+            {{-- for shopping card --}}
+            <a href="{{ route('card.show') }}" class="text-light">
+                <i class="bi bi-cart display-6"></i>
+                @if (session()->has('items_number'))
+                    <span class="position-absolute translate-middle badge rounded-pill bg-danger">
+                        {{ session('items_number') }}
+                        <span class="visually-hidden">unread messages</span>
+                    </span>
+                @endif
+            </a>
             </div>
         </header><!-- End Header -->
 
@@ -128,6 +136,31 @@
         </section><!-- End Hero -->
         
         <div class="container">
+            @if ($errors->any())
+                <div class="alert alert-danger col-8 m-auto mt-3">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+            @if (session('status'))
+                            <div class="alert alert-success col-10 m-auto" id="status" role="alert">
+                                {{ session('status') }} 
+                            </div>
+            @endif
+
+            @if (session()->has('info'))
+                <div id="flash-message" class="alert alert-{{ session('type')}} col-8 m-auto mt-3">
+                    <p>
+                        {{session('info')}}
+                    </p>
+                </div>
+            @endif
+
+
             @yield('main')
         </div>
 

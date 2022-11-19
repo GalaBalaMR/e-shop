@@ -26,7 +26,7 @@ class SubCategoryStoreRequest extends FormRequest
         return [
             'name' => 'required',
             'description' => 'required|max:255',
-            'img' => 'required'
+            'category_id' => 'required',
         ];
     }
 }

@@ -6,6 +6,7 @@ use App\Models\Item;
 use App\Models\User;
 use App\Models\Address;
 use App\Models\Category;
+use App\Models\Order;
 use App\Models\SubCategory;
 use Illuminate\Support\Str;
 use Illuminate\Database\Seeder;
@@ -64,7 +65,12 @@ class DatabaseSeeder extends Seeder
 
         User::factory(10)->create();
 
-        Address::factory(5)->create();
+
+
+        Address::factory(8)->create();
+
+        
+        // Order::factory(10)->create();
 
 
 

@@ -20,7 +20,7 @@ class CategoryController extends Controller
     {
         $categories = Category::with(['subCategories','subCategories.items', 'items'])->get();
 
-        return view('admin.category.index', compact('categories'));
+        return view('admin.categories.index', compact('categories'));
     }
 
     /**
@@ -30,7 +30,7 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        return view('admin.category.create');
+        return view('admin.categories.create');
     }
 
     /**
@@ -43,8 +43,7 @@ class CategoryController extends Controller
     {
         $request->validated();
 
-        $img = $request->file('image')->store('public/categories');
-
+        $img = $request->file('img')->store('public/categories');
         Category::create([
             'name' => $request->name,
             'description' => $request->description,
@@ -57,7 +56,7 @@ class CategoryController extends Controller
                                      'status'=> '1'
                                     ]);
         }
-        return back()->with(['info' => 'Podarilo sa pridať Kategóriu', 'type' => 'success']);
+        return redirect()->route('admin.categories.index')->with(['info' => 'Podarilo sa pridať Kategóriu', 'type' => 'success']);
     }
 
     /**
@@ -79,7 +78,7 @@ class CategoryController extends Controller
      */
     public function edit(Category $category)
     {
-        return view('admin.category.edit', compact('$category'));
+        return view('admin.categories.edit', compact('category'));
     }
 
     /**
@@ -112,7 +111,7 @@ class CategoryController extends Controller
                                      'status'=> '1'
                                     ]);
         }
-        return back()->with(['info' => 'Podarilo sa upraviť Kategóriu', 'type' => 'success']);
+        return redirect()->route('admin.categories.index')->with(['info' => 'Podarilo sa upraviť Kategóriu', 'type' => 'success']);
     }
 
     /**

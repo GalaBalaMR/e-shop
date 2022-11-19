@@ -16,9 +16,10 @@ class OrderFactory extends Factory
     public function definition()
     {
         return [
-            'price' => $this->faker->randomNumber(5, false),
-            'pieces' => json_encode(array('id' => Item::inRandomOrder()->value('id'), 'pcs' => $this->faker->randomNumber(2, false))),
-            'user_id' => User::inRandomOrder()->value('id')
+            'full_price' => $this->faker->randomNumber(5, false),
+            'items_data' => json_encode(array('id' => Item::inRandomOrder()->value('id'), 'pcs' =>                      $this->faker->randomNumber(2, false))),//old value, not working. Need assoc array with more item and other info
+            'user_id' => User::inRandomOrder()->value('id'),
+            'adrress_id' => User::inRandomOrder()->value('id')
         ];
     }
 }

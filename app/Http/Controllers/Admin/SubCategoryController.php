@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\SubCategory;
+use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
@@ -17,9 +18,9 @@ class SubCategoryController extends Controller
      */
     public function index()
     {
-        $subcategories = SubCategory::with(['items'])->get();
+        $subcategories = SubCategory::with('category')->get();
 
-        return view('admin.subcategory.index', compact('subcategories'));
+        return view('admin.subcategories.index', compact('subcategories'));
     }
 
     /**
@@ -29,7 +30,9 @@ class SubCategoryController extends Controller
      */
     public function create()
     {
-        return view('admin.subcategory.create');
+        $categories = Category::pluck('id', 'name');
+
+        return view('admin.subcategories.create', compact('categories'));
     }
 
     /**
@@ -42,12 +45,15 @@ class SubCategoryController extends Controller
     {
         $request->validated();
 
-        $img = $request->file('image')->store('public/subcategory');
+        $img = $request->file('img')->store('public/subcategory');
+
+        $cat_id = $request->category_id;
 
         SubCategory::create([
             'name' => $request->name,
             'description' => $request->description,
-            'img' => $img
+            'img' => $img,
+            'category_id' => $cat_id
         ]);
 
         if($request->ajax())
@@ -56,7 +62,7 @@ class SubCategoryController extends Controller
                                      'status'=> '1'
                                     ]);
         }
-        return back()->with(['info' => 'Podarilo sa pridať subkategóriu', 'type' => 'success']);
+        return redirect()->route('admin.subcategories.index')->with(['info' => 'Podarilo sa pridať subkategóriu', 'type' => 'success']);
     }
 
     /**
@@ -65,9 +71,10 @@ class SubCategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(SubCategory $subkategory)
+    public function edit(SubCategory $subcategory)
     {
-        return view('admin.category.edit', compact('$subcategory'));
+        $categories = Category::pluck('id', 'name');
+        return view('admin.subcategories.edit', compact('subcategory', 'categories'));
     }
 
     /**
@@ -83,16 +90,17 @@ class SubCategoryController extends Controller
 
         $image = $subcategory->img;
 
-        if($request->hasFile('image'))
+        if($request->hasFile('img'))
         {
             Storage::delete($subcategory->img);
-            $image = $request->file('image')->store('public/subcategory');
+            $image = $request->file('img')->store('public/subcategory');
         };
 
         $subcategory->update([
             'name' => $request->name,
             'description' => $request->description,
-            'img' => $image
+            'img' => $image,
+            'category_id' => $request->category_id,
         ]);
 
         if($request->ajax())
@@ -101,7 +109,7 @@ class SubCategoryController extends Controller
                                      'status'=> '1'
                                     ]);
         }
-        return back()->with(['info' => 'Podarilo sa upraviť subategóriu', 'type' => 'success']);
+        return redirect()->route('admin.subcategories.index')->with(['info' => 'Podarilo sa upraviť subategóriu', 'type' => 'success']);
     }
 
     /**
