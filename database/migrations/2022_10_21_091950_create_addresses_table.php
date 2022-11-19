@@ -19,7 +19,8 @@ class CreateAddressesTable extends Migration
             $table->string('town');
             $table->string('street');
             $table->integer('number');
-            $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreignId('user_id')->nullable()->references('id')->on('users')->onDelete('cascade');
+            $table->foreignId('order_id')->nullable()->references('id')->on('orders')->onDelete('cascade');
             $table->timestamps();
         });
     }
