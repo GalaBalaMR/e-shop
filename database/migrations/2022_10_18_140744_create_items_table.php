@@ -21,7 +21,7 @@ class CreateItemsTable extends Migration
             $table->text('short_description');
             $table->longText('long_description');
             $table->integer('price');
-            $table->integer('numbers');
+            $table->integer('storage_pcs');
 
             $table->unsignedInteger('category_id')->nullable()->index();
             $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
