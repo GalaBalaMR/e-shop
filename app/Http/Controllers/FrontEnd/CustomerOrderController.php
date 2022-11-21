@@ -114,7 +114,7 @@ class CustomerOrderController extends Controller
         // END ADDRESS IF-----------------------------------------------------
 
 
-        // MAKE ORDER---------------------------------------------------------
+        // MAKE ORDER and SUBSTRACT ITEM---------------------------------------------------------
         $items = array();// assoc array which save in db with info about items
         $ids = array();//array of item's id for atachment(order+items)
         $full_price = 0;
@@ -133,35 +133,49 @@ class CustomerOrderController extends Controller
             $ids[] = $data['item_id'];
             
             $full_price += $data['item_full_price'];
+
+            // for SUBSTRACT ITEM->storage_pcs-----------------------------------
+
+            $item_storage = Item::find($data['item_id']);
+            $item_storage_pcs = $item_storage->storage_pcs;//use it in if statement.
+            $item_storage->storage_pcs -= $data['item_pcs'];
+            // if is storage_pcs smaller than 0, dont make order, return back with message.
+            if($item_storage->storage_pcs < 0)
+            {
+                return back()->with(['info' => 'Nemožno vytvoriť objednávku z dôvodu nedostatočných zásob produktu: '. $item_storage->name .'. Môžte objednať maximálne '. $item_storage_pcs .' kusov.', 'type' => 'danger']);
+            }
+            $item_storage->save();
+            // end---------------------------------------------------------------
+
         };
 
         // For delivery type, count delivery price with full_price
-        if($request->delivery === 'standard')
+        if($request->delivery === 'standard- 5€')
         {
             $full_price += 5;
             $order = Order::create([
                 'items_data' => json_encode($items),
                 'full_price' => $full_price,
                 'user_id' => Auth::id(),
-                'delivery' => 'standard'
+                'delivery' => 'standard- 5€'
             ]);
-        }elseif($request->delivery == 'dhl')
+        }elseif($request->delivery == 'dhl- 3€')
         {
             $full_price += 3;
             $order = Order::create([
                 'items_data' => json_encode($items),
                 'full_price' => $full_price,
                 'user_id' => Auth::id(),
-                'delivery' => 'dhl'
+                'delivery' => 'dhl- 3€'
             ]);
-        }elseif($request->delivery == '123kurier')
+        }elseif($request->delivery == '123kurier- 3€')
         {
             $full_price += 3;
             $order = Order::create([
                 'items_data' => json_encode($items),
                 'full_price' => $full_price,
                 'user_id' => Auth::id(),
-                'delivery' => '123kurier'
+                'delivery' => '123kurier- 3€'
             ]);
         }
         
@@ -184,11 +198,6 @@ class CustomerOrderController extends Controller
             $order->other_address = 'yes';
             $order->save();
         }
-
-        
-
-        // Send mail to customer about success order
-        Mail::to( $order->user->email)->send( new OrderConfirm($order));
 
         if($request->ajax())
         {
