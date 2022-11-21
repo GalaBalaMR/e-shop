@@ -16,7 +16,7 @@ class ItemFactory extends Factory
         return [
             'name' => $this->faker->name(),
             'img' => 'public/seed/empty.jpg|public/seed/empty.jpg|public/seed/empty.jpg',
-            'numbers' => $this->faker->numberBetween(1, 249),
+            'storage_pcs' => $this->faker->numberBetween(1, 249),
             'price' => $this->faker->numberBetween(1, 249),
 
             'short_description' => $this->faker->paragraph(),

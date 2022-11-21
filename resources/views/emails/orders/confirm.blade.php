@@ -7,14 +7,14 @@ Prijali sme od Teba objednávku číslo {{ $order->id }}.
 Objednal si produkty:
 <ul>
     @foreach (json_decode($order->items_data) as $item)
-        <li> {{ Item::find($item->id)->name }}v cene {{ $item->price }} a počte {{ $item->pcs }} kusov. Celkova cena je {{ $item->full_price }}</li>
+        <li> {{ Item::find($item->id)->name }}v cene {{ $item->price }} € a počte {{ $item->pcs }} kusov. Celkova cena je {{ $item->full_price }} €.</li>
     @endforeach
     <li>Spôsob doručenia je {{ $order->delivery }}</li>
 </ul>
 <hr>
 <h2>Na adresu:</h2>
 <ul>
-@if($order->address() != null)
+@if($order->address()->exists())
 <li>{{ $order->address->post_code }}</li>
 <li>{{ $order->address->town }}</li>
 <li>{{ $order->address->street }}</li>
@@ -27,8 +27,8 @@ Objednal si produkty:
 @endif
 </ul>
 
-Za celú objednávku ste zaplatili:{{ $order->full_price }}
+Za celú objednávku ste zaplatili: {{ $order->full_price }} €.
 
-Thanks,<br>
+Vďaka,<br>
 {{ config('app.name') }}
 @endcomponent

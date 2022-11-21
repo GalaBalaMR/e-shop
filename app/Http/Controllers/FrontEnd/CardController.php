@@ -88,8 +88,14 @@ class CardController extends Controller
     {
         $request->validate([
             'item_id' => 'required',
-            'item_pcs' => 'required'
+            'item_pcs' => 'required',
+            'storage_pcs' => 'required'
         ]);
+
+        if($request->storage_pcs < $request->item_pcs)
+        {
+            return back()->with(['info' => 'Máte záujem o viac produktov, ako máme na sklade :(.', 'type' => 'danger']);
+        }
 
         $item_id = $request->item_id;
         $item_pcs = $request->item_pcs;

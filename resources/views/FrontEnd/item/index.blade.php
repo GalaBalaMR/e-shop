@@ -51,16 +51,27 @@
                     <div class="col-lg-4 col-md-6 portfolio-item filter-cat-{{ $item->category_id }}">
                 @endif
 
-                    <div class="portfolio-wrap">
+                    <div class="portfolio-wrap mb-0">
                         @foreach(explode('|',$item->img) as $img)
                         @if($loop->first)
                         <img src="{{ Storage::url($img) }}" class="img-fluid" alt="">
                         @endif
                         @endforeach
-                        <div class="portfolio-info">
-                        <h4>{{ $item->name }}</h4>
-                        <p>{{ $item->short_description }}</p>
-                        <div class="portfolio-links">
+                        <div class="portfolio-info pb-0">
+
+                        <h4 class="mb-0">{{ $item->name }}</h4>
+                        <p>
+                            {{ $item->short_description }}
+                        </p>
+                        <div class="d-flex justify-content-between w-100">
+                            <blockquote class="text-warning mb-0">
+                                Na sklade: {{ $item->storage_pcs }} ks
+                            </blockquote>
+                            <blockquote class="text-warning mb-0 me-3">
+                                {{ $item->price }} €
+                            </blockquote>
+                        </div>
+                        <div class="portfolio-links d-flex justify-content-around h-25 w-100">
                             
                             {{-- foreach pictures and show just first --}}
                             @foreach(explode('|',$item->img) as $img)
@@ -70,11 +81,13 @@
                             @endforeach
 
                             <a href="{{ route('item.show', ['id' => $item->id]) }}" title="More Details"><i class="bx bx-link"></i></a>
-                            <form action="{{ route('card.store') }}" method="post">
+
+                            <form action="{{ route('card.store') }}" method="post" class="d-flex justify-content-center pb-1">
                                 @csrf
-                                <input type="number" name="item_pcs" id="" min="0">
+                                <input type="number" name="item_pcs" id="" min="1" max="{{ $item->storage_pcs }}">
                                 <input type="hidden" name="item_id" value="{{ $item->id }}">
-                                <button type="submit" class="btn btn-warning rounded-pill">Pridať do košíku</button>
+                                <input type="hidden" name="storage_pcs" value="{{ $item->storage_pcs }}">
+                                <button type="submit" class="btn btn-warning rounded-pill">Kúpiť</button>
                             </form>
                         </div>
                         </div>
