@@ -11,11 +11,13 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\FrontEnd\CardController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\MessageController;
 use App\Http\Controllers\FrontEnd\WelcomeController;
 use App\Http\Controllers\Admin\SubCategoryController;
 use App\Http\Controllers\FrontEnd\AddressController;
 use App\Http\Controllers\FrontEnd\CustomerItemController;
 use App\Http\Controllers\FrontEnd\CustomerOrderController;
+use App\Http\Controllers\FullCalendarController;
 
 /*
 |--------------------------------------------------------------------------
@@ -70,6 +72,14 @@ Route::middleware(['role:Admin|Service|Manager'])->name('admin.')->prefix('admin
     Route::resource('/items' , ItemController::class);
     Route::resource('/orders' , OrderController::class);
     Route::resource('/addresses' , AdminAddressController::class);
+    Route::resource('/messages' , MessageController::class);
+    // calendar
+    Route::get('/calendar', [FullCalendarController::class, 'index'])->name('calendar');
+    Route::get('fullcalendar/create-event', [FullCalendarController::class, 'form'])->name('CalendarForm');
+    Route::post('fullcalendar/create', [FullCalendarController::class, 'create'])->name('create_event');
+    Route::post('fullcalendar/update', [FullCalendarController::class, 'update']);
+    Route::post('fullcalendar/delete', [FullCalendarController::class, 'destroy']);
+
 });
 
 Auth::routes();

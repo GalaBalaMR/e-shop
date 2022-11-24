@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Mail\OrderConfirm;
 use App\Models\Address;
 use App\Models\Item;
+use App\Events\OrderCreated;
 use App\Models\Order;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -72,6 +73,7 @@ class CustomerOrderController extends Controller
 
         return view('card', compact('items_data'));
     }
+
 
     /**
      * Store a newly created resource in storage.
@@ -198,6 +200,12 @@ class CustomerOrderController extends Controller
             $order->other_address = 'yes';
             $order->save();
         }
+
+        // Send mail to customer about success order
+        Mail::to( $order->user->email)->send( new OrderConfirm($order));
+
+        // Send message to admin about order, forget session items
+        event(new OrderCreated($order));
 
         if($request->ajax())
         {

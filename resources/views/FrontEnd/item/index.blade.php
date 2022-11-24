@@ -57,13 +57,13 @@
                         <img src="{{ Storage::url($img) }}" class="img-fluid" alt="">
                         @endif
                         @endforeach
-                        <div class="portfolio-info pb-0">
+                        <div class="portfolio-info">
 
                         <h4 class="mb-0">{{ $item->name }}</h4>
                         <p>
                             {{ $item->short_description }}
                         </p>
-                        <div class="d-flex justify-content-between w-100">
+                        <div class="d-flex justify-content-between w-100 mb-2">
                             <blockquote class="text-warning mb-0">
                                 Na sklade: {{ $item->storage_pcs }} ks
                             </blockquote>
@@ -71,7 +71,7 @@
                                 {{ $item->price }} €
                             </blockquote>
                         </div>
-                        <div class="portfolio-links d-flex justify-content-around h-25 w-100">
+                        <div class="portfolio-links d-flex justify-content-around w-100">
                             
                             {{-- foreach pictures and show just first --}}
                             @foreach(explode('|',$item->img) as $img)
@@ -84,7 +84,7 @@
 
                             <form action="{{ route('card.store') }}" method="post" class="d-flex justify-content-center pb-1">
                                 @csrf
-                                <input type="number" name="item_pcs" id="" min="1" max="{{ $item->storage_pcs }}">
+                                <input type="number" name="item_pcs" class="me-3" id="" min="1" max="{{ $item->storage_pcs }}">
                                 <input type="hidden" name="item_id" value="{{ $item->id }}">
                                 <input type="hidden" name="storage_pcs" value="{{ $item->storage_pcs }}">
                                 <button type="submit" class="btn btn-warning rounded-pill">Kúpiť</button>

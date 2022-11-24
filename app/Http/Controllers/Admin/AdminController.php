@@ -3,9 +3,14 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\Item;
+use App\Models\Event;
+use App\Models\Order;
+use App\Models\Message;
 use App\Charts\RandomChart;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Response;
 use App\Http\Controllers\Controller;
+// use LaravelFullCalendar\Event;
 
 class AdminController extends Controller
 {
@@ -16,12 +21,25 @@ class AdminController extends Controller
      */
     public function index()
     {
-        $items = Item::all();
-        $chart_items = $items->pluck('name' , 'price');
+        $messages = Message::where('error', 'yes')->get();
+
+        $orders = Order::all();
+        $chart_orders = $orders->pluck('created_at' , 'full_price');
         $chart = new RandomChart;
-        $chart->labels($chart_items->values());
-        $chart->dataset('Cena produktu', 'line', $chart_items->keys());
-        
-        return view('admin.dashboard', compact('chart', 'items'));
+        $chart->labels($chart_orders->values());
+        $chart->dataset('Cena produktu', 'line', $chart_orders->keys());
+
+        // for fullcallendar
+        if(request()->ajax()) 
+        {
+ 
+         $start = (!empty($_GET["start"])) ? ($_GET["start"]) : ('');
+         $end = (!empty($_GET["end"])) ? ($_GET["end"]) : ('');
+ 
+         $data = Event::whereDate('start', '>=', $start)->whereDate('end',   '<=', $end)->get(['id','title','start', 'end']);
+         return Response::json($data);
+        }
+
+        return view('admin.dashboard', compact('chart', 'orders', 'messages'));
     }
 }

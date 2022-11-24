@@ -39,12 +39,14 @@ class Item extends Model
         parent::boot();
 
         // Message for admin, about storage_pcs is under 10 pcs
-        static::updated(function($item) {
+        static::updated(function(Item $item) {
+            $item_id = $item->id;
             if($item->storage_pcs < 10)
             Message::create([
-                'name' => 'Nedostatok produktu '. $item->name,
+                'name' => 'Nedostatok produktu',
                 'about' => 'item',
-                'about_id' => $item->id,
+                'about_id' => $item_id,
+                'error' => 'yes',
                 'content' => 'Zásoby produktu '. $item->name .' klesli pod 10 kusov. Aktuálne zásoby sú '.          $item->storage_pcs .'.'
             ]);
         });        
