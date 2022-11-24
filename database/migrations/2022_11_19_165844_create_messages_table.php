@@ -19,6 +19,7 @@ class CreateMessagesTable extends Migration
             $table->string('about');
             $table->integer('about_id')->nullable();
             $table->text('content');
+            $table->string('error')->nullable();
             $table->timestamps();
         });
     }
