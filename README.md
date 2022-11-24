@@ -6,19 +6,19 @@
 ### <div align="center">Hello! My name is Matúš and I believe, that one day i will be great developer 👨‍💻! For this moment, I just learn because it is only way how to change my dream in to reality🙂</div>  
   
 
-- 🔭 This is my first online web, so I am proud father of something, what's online!  
+- 🔭 That's it, ladies and gentlmens, this is my first e-commerce ever! Yes, it's not perfect, still in progres, but i hope that this project can represent my knowledge of laravel 🙂  
   
 
 
 
 ### About Project  
-- 🛠️ It is for my friend. He is carpenter, so page is about his job and present his skill.  
+- 🛠️ Small e-commerce with logic for admin and user.   
   
 
-- ❓ What it does? I hope everything, what's needed. You can mail him, he can mail you back 🙃 just joking. But it's true! And it has admin panel, where he can update content, or upload his new project.  
+- ❓ What it does? I hope everything, what's needed. You can add categories, subcategories of items, items and when something important happend, admin receive message about it in admin panel and customer receive mail about his order.  
   
 
-- 🏃‍♂️ It is running on Laravel and use package like spatie, trumbowyg and more...  
+- 🏃‍♂️ It is running on Laravel and use package like spatie, fullcalendar and more...  
   
 
 <br/>  
