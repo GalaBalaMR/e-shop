@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\ItemStoreRequest;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Route;
 
 class ItemController extends Controller
 {
@@ -156,16 +157,26 @@ class ItemController extends Controller
      */
     public function destroy(Request $request, Item $item)
     {
-        Storage::delete([explode('|', $item->img)]);
-
+        
+        // Storage::delete([explode('|', $item->img)]);
+        
         $item->delete();
-
+        
         if($request->ajax())
         {
-            return response()->json(['flash' => 'Podarilo sa vymazať položku.',
-                                     'status'=> '1'
-                                    ]);
+            return response()->json(['flash' => 'Podarilo sa vymazať produkt.',
+            'status'=> '1'
+            ]);
         }
-        return back()->with(['info' => 'Podarilo sa vymazať položku', 'type' => 'success']);
+    
+        $url = url()->previous();
+        $route = app('router')->getRoutes($url)->match(app('request')->create($url))->getName();
+    
+        if($route == 'admin.items.show')
+        {
+            return redirect()->route('admin.messages.index')->with(['info' => 'Podarilo sa vymazať produkt', 'type' => 'success']);
+        };
+
+        return back()->with(['info' => 'Podarilo sa vymazať produkt', 'type' => 'success']);
     }
 }

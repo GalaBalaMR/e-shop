@@ -32,7 +32,11 @@
                 @forelse ($items as $item)
                     <tr>
                         <td>{{ $item->id }}</td>
-                        <td>{{ $item->name }}</td>
+                        <td><a href="{{ route('admin.items.show', $item->id) }}"
+                            class="link link-success text-decoration-none">
+                                {{ $item->name }}
+                            </a>
+                        </td>
                         <td>{{ $item->short_description }}</td>
                         <td>{{ $item->price }}</td>
                         <td>{{ $item->created_at }}</td>
@@ -42,7 +46,7 @@
                                 @method('DELETE')
                                 <button type="submit" class="btn-close"></button>
                             </form>
-                            <a href="{{ route('admin.items.edit', $item->id) }}" class="link-success decoration-none m-auto">Editovať</a>
+                            <a href="{{ route('admin.items.edit', $item->id) }}" class="link-success text-decoration-none m-auto">Editovať</a>
                         </td>
                     </tr>
                     
