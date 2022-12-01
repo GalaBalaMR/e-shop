@@ -7,7 +7,7 @@
         <!-- CSRF Token -->
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
+        <title>{{ config('app.name', 'Eshop') }}</title>
 
         <!-- Scripts -->
         <script src="{{ asset('js/app.js') }}" defer></script>
@@ -37,7 +37,7 @@
         <header id="header" class="fixed-top ">
             <div class="container d-flex align-items-center justify-content-lg-between">
 
-            <h1 class="logo me-auto me-lg-0"><a href="index.html">Gp<span>.</span></a></h1>
+            <h1 class="logo me-auto me-lg-0"><a href="/">{{ config('app.name', 'E-shop') }}<span>.</span></a></h1>
             <!-- Uncomment below if you prefer to use an image logo -->
             <!-- <a href="index.html" class="logo me-auto me-lg-0"><img src="assets/img/logo.png" alt="" class="img-fluid"></a>-->
 
@@ -49,7 +49,7 @@
                     <li><a class="nav-link scrollto " href="#portfolio">Portfolio</a></li>
                     <li><a class="nav-link scrollto" href="#team">Team</a></li>
                     @role('Admin')
-                    <li class="dropdown"><a href="#"><span>Admin</span> <i class="bi bi-chevron-down"></i></a>
+                    <li class="dropdown"><a href="#" class="text-decoration-none"><span>Admin</span> <i class="bi bi-chevron-down"></i></a>
                         <ul>
                             <li><a href="{{ route('admin.index') }}">Admin Panel</a></li>
                             <li><a href="{{ route('admin.messages.index') }}">Upozornenia</a></li>
@@ -68,7 +68,8 @@
                     </li>
                     @endrole
                     @guest
-                    <li class="dropdown"><a href="#"><span>Možnosti</span> <i class="bi bi-chevron-down"></i></a>
+                    <li class="dropdown ">
+                        <a href="#" class="text-decoration-none"><span>Možnosti</span> <i class="bi bi-chevron-down"></i></a>
                         <ul>
                             <li><a href="{{ route('login') }}">Prihlásiť sa</a></li>
                             <li><a href="{{ route('register') }}">Registrovať sa sa</a></li> 
@@ -76,7 +77,8 @@
                     </li>
                     @endguest
                     @auth
-                    <li class="dropdown"><a href="#"><span>Možnosti</span> <i class="bi bi-chevron-down"></i></a>
+                    <li class="dropdown">
+                        <a href="#" class="text-decoration-none"><span>Možnosti</span> <i class="bi bi-chevron-down"></i></a>
                         <ul>
                             <li><a href="{{ route('users.show', auth()->user()->id) }}">{{ auth()->user()->name }}</a></li>
                             <li><a href="{{ route('orders.index') }}">Objednávky</a></li> 
