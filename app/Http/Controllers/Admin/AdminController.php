@@ -28,18 +28,7 @@ class AdminController extends Controller
         $chart = new RandomChart;
         $chart->labels($chart_orders->values());
         $chart->dataset('Cena produktu', 'line', $chart_orders->keys());
-
-        // for fullcallendar
-        if(request()->ajax()) 
-        {
- 
-         $start = (!empty($_GET["start"])) ? ($_GET["start"]) : ('');
-         $end = (!empty($_GET["end"])) ? ($_GET["end"]) : ('');
- 
-         $data = Event::whereDate('start', '>=', $start)->whereDate('end',   '<=', $end)->get(['id','title','start', 'end']);
-         return Response::json($data);
-        }
-
+      
         return view('admin.dashboard', compact('chart', 'orders', 'messages'));
     }
 }

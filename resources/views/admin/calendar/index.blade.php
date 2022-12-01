@@ -7,7 +7,7 @@
     </div>
     <script>
     $(document).ready(function () {
-      var SITEURL = "{{url('/admin')}}";
+      var SITEURL = "{{url('/admin/calendar')}}";
       $.ajaxSetup({
         headers: {
         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -47,7 +47,7 @@
         var start = $.fullCalendar.formatDate(start, "Y-MM-DD 12:00:00");
         var end = moment(start).add(1, "h").format("Y-MM-DD HH:mm:ss");//$.fullCalendar.formatDate(end, "Y-MM-DD HH:mm:ss")(to next day event)
         $.ajax({
-            url: SITEURL + "/fullcalendar/create",
+            url: SITEURL + "/create",
             data: 'title=' + title + '&start=' + start + '&end=' + end,
             type: "POST",
             success: function (data) {
@@ -70,7 +70,7 @@
         var start = $.fullCalendar.formatDate(event.start, "Y-MM-DD HH:mm:ss");
         var end = $.fullCalendar.formatDate(event.end, "Y-MM-DD HH:mm:ss");
         $.ajax({
-            url: SITEURL + '/fullcalendar/update',
+            url: SITEURL + '/update',
             data: 'title=' + event.title + '&start=' + start + '&end=' + end + '&id=' + event.id,
             type: "POST",
             success: function (response) {
@@ -83,7 +83,7 @@
         if (deleteMsg) {
             $.ajax({
             type: "POST",
-            url: SITEURL + '/fullcalendar/delete',
+            url: SITEURL + '/delete',
             data: "&id=" + event.id,
             success: function (response) {
             if(parseInt(response) > 0) {

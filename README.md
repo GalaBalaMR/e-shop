@@ -6,7 +6,7 @@
 ### <div align="center">Hello! My name is Matúš and I believe, that one day i will be great developer 👨‍💻! For this moment, I just learn because it is only way how to change my dream in to reality🙂</div>  
   
 
-- 🔭 That's it, ladies and gentlmens, this is my first e-commerce ever! Yes, it's not perfect, still in progres, but i hope that this project can represent my knowledge of laravel 🙂  
+- 🔭 That's it, ladies and gentlmens, this is my first e-commerce ever! Yes, it's not perfect, still in progress, but i hope that this project can represent my knowledge of laravel 🙂  
   
 
 

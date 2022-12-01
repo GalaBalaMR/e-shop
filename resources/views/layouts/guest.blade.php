@@ -43,29 +43,48 @@
 
             <nav id="navbar" class="navbar order-last order-lg-0">
                 <ul>
-                <li><a class="nav-link scrollto active" href="#hero">Home</a></li>
-                <li><a class="nav-link scrollto" href="#about">About</a></li>
-                <li><a class="nav-link scrollto" href="#services">Services</a></li>
-                <li><a class="nav-link scrollto " href="#portfolio">Portfolio</a></li>
-                <li><a class="nav-link scrollto" href="#team">Team</a></li>
-                <li class="dropdown"><a href="#"><span>Drop Down</span> <i class="bi bi-chevron-down"></i></a>
-                    <ul>
-                    <li><a href="#">Drop Down 1</a></li>
-                    <li class="dropdown"><a href="#"><span>Deep Drop Down</span> <i class="bi bi-chevron-right"></i></a>
+                    <li><a class="nav-link scrollto active" href="#hero">Home</a></li>
+                    <li><a class="nav-link scrollto" href="#about">About</a></li>
+                    <li><a class="nav-link scrollto" href="#services">Services</a></li>
+                    <li><a class="nav-link scrollto " href="#portfolio">Portfolio</a></li>
+                    <li><a class="nav-link scrollto" href="#team">Team</a></li>
+                    @role('Admin')
+                    <li class="dropdown"><a href="#"><span>Admin</span> <i class="bi bi-chevron-down"></i></a>
                         <ul>
-                        <li><a href="#">Deep Drop Down 1</a></li>
-                        <li><a href="#">Deep Drop Down 2</a></li>
-                        <li><a href="#">Deep Drop Down 3</a></li>
-                        <li><a href="#">Deep Drop Down 4</a></li>
-                        <li><a href="#">Deep Drop Down 5</a></li>
+                            <li><a href="{{ route('admin.index') }}">Admin Panel</a></li>
+                            <li><a href="{{ route('admin.messages.index') }}">Upozornenia</a></li>
+                            <li><a href="{{ route('admin.calendar') }}">Kalendár</a></li>
+                            <li><a class="dropdown-item" href="{{ route('logout') }}"
+                                onclick="event.preventDefault();
+                                              document.getElementById('logout-form').submit();">
+                                 {{ __('Odhlásiť sa') }}
+                                </a>
+    
+                                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                    @csrf
+                                </form>
+                            </li>
                         </ul>
                     </li>
-                    <li><a href="#">Drop Down 2</a></li>
-                    <li><a href="#">Drop Down 3</a></li>
-                    <li><a href="#">Drop Down 4</a></li>
-                    </ul>
-                </li>
-                <li><a class="nav-link scrollto" href="#contact">Contact</a></li>
+                    @endrole
+                    @guest
+                    <li class="dropdown"><a href="#"><span>Možnosti</span> <i class="bi bi-chevron-down"></i></a>
+                        <ul>
+                            <li><a href="{{ route('login') }}">Prihlásiť sa</a></li>
+                            <li><a href="{{ route('register') }}">Registrovať sa sa</a></li> 
+                        </ul>
+                    </li>
+                    @endguest
+                    @auth
+                    <li class="dropdown"><a href="#"><span>Možnosti</span> <i class="bi bi-chevron-down"></i></a>
+                        <ul>
+                            <li><a href="{{ route('users.show', auth()->user()->id) }}">{{ auth()->user()->name }}</a></li>
+                            <li><a href="{{ route('orders.index') }}">Objednávky</a></li> 
+                        </ul>
+                    </li>
+                    @endauth
+                    
+                    <li><a class="nav-link scrollto" href="#contact">Contact</a></li>
                 </ul>
                 <i class="bi bi-list mobile-nav-toggle"></i>
             </nav><!-- .navbar -->
@@ -94,8 +113,8 @@
 
             <div class="row justify-content-center" data-aos="fade-up" data-aos-delay="150">
                 <div class="col-xl-6 col-lg-8">
-                <h1>Powerful Digital Solutions With Gp<span>.</span></h1>
-                <h2>We are team of talented digital marketers</h2>
+                <h1>Volupta provident<span>.</span></h1>
+                <h2>sed do eiusmod </h2>
                 </div>
             </div>
 

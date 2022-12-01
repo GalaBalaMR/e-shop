@@ -13,6 +13,7 @@ use App\Http\Controllers\FrontEnd\CardController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\MessageController;
 use App\Http\Controllers\FrontEnd\WelcomeController;
+use App\Http\Controllers\FrontEnd\UserController as UserFrontEnd;
 use App\Http\Controllers\Admin\SubCategoryController;
 use App\Http\Controllers\FrontEnd\AddressController;
 use App\Http\Controllers\FrontEnd\CustomerItemController;
@@ -46,6 +47,13 @@ Route::controller(AddressController::class)->name('address.')->prefix('address')
     Route::post('/order-address', 'storeOrderAddress')->name('storeOrderAddress');
 }); 
 
+
+
+/* 
+Routes for user's profile
+ */
+Route::resource('users', UserFrontEnd::class)->middleware('auth');
+
 /* 
 Routes for customer orders
 Just for authenticated user
@@ -75,10 +83,10 @@ Route::middleware(['role:Admin|Service|Manager'])->name('admin.')->prefix('admin
     Route::resource('/messages' , MessageController::class);
     // calendar
     Route::get('/calendar', [FullCalendarController::class, 'index'])->name('calendar');
-    Route::get('fullcalendar/create-event', [FullCalendarController::class, 'form'])->name('CalendarForm');
-    Route::post('fullcalendar/create', [FullCalendarController::class, 'create'])->name('create_event');
-    Route::post('fullcalendar/update', [FullCalendarController::class, 'update']);
-    Route::post('fullcalendar/delete', [FullCalendarController::class, 'destroy']);
+    Route::get('calendar/create-event', [FullCalendarController::class, 'form'])->name('CalendarForm');
+    Route::post('calendar/create', [FullCalendarController::class, 'create'])->name('create_event');
+    Route::post('calendar/update', [FullCalendarController::class, 'update']);
+    Route::post('calendar/delete', [FullCalendarController::class, 'destroy']);
 
 });
 

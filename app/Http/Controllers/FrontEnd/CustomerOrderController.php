@@ -29,53 +29,6 @@ class CustomerOrderController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     * With compacted items_data from session
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        $pieces = array();
-        $prices = array();
-        $mix = array();
-
-        foreach(session('items') as $item)
-        {
-            // find model
-            $item_Col = Item::find($item['id']);
-
-            // sum price
-            $item_price = $item_Col->price;
-            $item_price *= $item['pcs'];
-
-            /*  
-            change model to array for foreach loop in view
-            other types(object..) alternative has lots of loop which case in error
-             */
-            
-            $item_Col->toArray();
-
-
-            $prices[$item['id']] = $item_price;
-
-            $pieces[$item['id']] = $item['pcs'];
-
-            // make asoc array which send to the view    
-            $items_data[] = [
-                'item' => $item_Col,
-                'fullPrice' => $item_price,
-                'pcs' => $item['pcs']
-            ];
-
-
-        }; 
-
-        return view('card', compact('items_data'));
-    }
-
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request

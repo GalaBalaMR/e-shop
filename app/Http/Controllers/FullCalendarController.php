@@ -10,6 +10,7 @@ class FullCalendarController extends Controller
 {
     public function index()
     {
+        // for fullcallendar
         if(request()->ajax()) 
         {
  
