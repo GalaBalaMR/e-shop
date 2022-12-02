@@ -23,7 +23,7 @@ class CustomerOrderController extends Controller
      */
     public function index()
     {
-        $customer_orders = Order::where('user_id', Auth::id())->with('items');
+        $customer_orders = Order::where('user_id', auth()->user()->id)->with('address')->get();
 
         return view('frontEnd.order.index', compact('customer_orders'));
     }
@@ -157,7 +157,7 @@ class CustomerOrderController extends Controller
         // Send mail to customer about success order
         Mail::to( $order->user->email)->send( new OrderConfirm($order));
 
-        // Send message to admin about order, forget session items
+        // Send message to admin about order, forget session items and items_number
         event(new OrderCreated($order));
 
         if($request->ajax())
@@ -167,45 +167,6 @@ class CustomerOrderController extends Controller
                                     ]);
         }
         return back()->with(['info' => 'Podarilo sa vytvoriť novú objednávku.', 'type' => 'success']);
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        $order = Order::find($id)->with('items');
-
-        return view('frontEnd.order.show', compact('order'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-
-        // $customer = User::find($id);
-        // Mail::to( 'carnobusky@gmail.sk')->send( new OrderConfirm($customer));
-        return 'hello';
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
     }
 
     /**
