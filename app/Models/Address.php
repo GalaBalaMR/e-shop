@@ -21,4 +21,20 @@ class Address extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function getTownAttribute($value)
+    {
+        return ucfirst($value);
+    }
+
+    public function getStreetAttribute($value)
+    {
+        return ucfirst($value);
+    }
+
+    public function getFullAddressAttribute()
+    {
+        return "{$this->town}, {$this->street}, {$this->number}";
+    }
+
 }
