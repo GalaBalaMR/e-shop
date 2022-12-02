@@ -28,5 +28,6 @@ class DeleteSessionItem
     public function handle(OrderCreated $event)
     {
         session()->forget('items');
+        session()->forget('items_number');
     }
 }
