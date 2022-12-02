@@ -92,7 +92,7 @@
             </nav><!-- .navbar -->
 
             
-            <a href="#about" class="get-started-btn scrollto">Get Started</a>
+            <a href="{{ route('item.index') }}" class="get-started-btn scrollto">Do obchodu</a>
             
             {{-- for shopping card --}}
             <a href="{{ route('card.show') }}" class="text-light">

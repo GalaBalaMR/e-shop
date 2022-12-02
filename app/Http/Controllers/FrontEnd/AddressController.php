@@ -30,7 +30,6 @@ class AddressController extends Controller
             'town' => $request->town,
             'street' => $request->street,
             'number' => $request->number,
-            'order_id' => 4
         ]);
 
         // send it to card show

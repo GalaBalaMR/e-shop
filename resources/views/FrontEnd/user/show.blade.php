@@ -1,7 +1,7 @@
 @extends('layouts.guest')
 @section('main')
 
-<!-- ======= Portfolio Details Section ======= -->
+<!-- ======= User Section ======= -->
 <section id="portfolio-details" class="portfolio-details">
     <div class="container">
 
@@ -19,5 +19,5 @@
         </div>
 
     </div>
-</section><!-- End Portfolio Details Section -->
+</section><!-- End User Section -->
 @endsection
