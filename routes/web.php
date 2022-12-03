@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\MessageController;
 use App\Http\Controllers\FrontEnd\WelcomeController;
 use App\Http\Controllers\FrontEnd\UserController as UserFrontEnd;
 use App\Http\Controllers\Admin\SubCategoryController;
+use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\FrontEnd\AddressController;
 use App\Http\Controllers\FrontEnd\CustomerItemController;
 use App\Http\Controllers\FrontEnd\CustomerOrderController;
@@ -47,7 +48,8 @@ Route::controller(AddressController::class)->name('address.')->prefix('address')
     Route::post('/order-address', 'storeOrderAddress')->name('storeOrderAddress');
 }); 
 
-
+Route::get('/sign-in/github', [LoginController::class, 'github']);
+Route::get('/sign-in/github/redirect', [LoginController::class, 'githubRedirect']);
 
 /* 
 Routes for user's profile
