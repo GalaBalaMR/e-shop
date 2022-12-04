@@ -1,25 +1,26 @@
 <?php
 
-use App\Http\Controllers\Admin\AddressController as AdminAddressController;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Admin\ItemController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\FullCalendarController;
+use App\Http\Controllers\Admin\MessageController;
 use App\Http\Controllers\FrontEnd\CardController;
 use App\Http\Controllers\Admin\CategoryController;
-use App\Http\Controllers\Admin\MessageController;
-use App\Http\Controllers\FrontEnd\WelcomeController;
-use App\Http\Controllers\FrontEnd\UserController as UserFrontEnd;
-use App\Http\Controllers\Admin\SubCategoryController;
-use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\FrontEnd\AddressController;
+use App\Http\Controllers\FrontEnd\WelcomeController;
+use App\Http\Controllers\Admin\SubCategoryController;
 use App\Http\Controllers\FrontEnd\CustomerItemController;
 use App\Http\Controllers\FrontEnd\CustomerOrderController;
-use App\Http\Controllers\FullCalendarController;
+use App\Http\Controllers\FrontEnd\UserController as UserFrontEnd;
+use App\Http\Controllers\Admin\AddressController as AdminAddressController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,6 +34,10 @@ use App\Http\Controllers\FullCalendarController;
 */
 
 Route::get('/', [WelcomeController::class, 'index']);
+
+Route::get("/privacy-policy", function(){
+    return View::make("FrontEnd.privace");
+ });
 
 // Route for item
 Route::controller(CustomerItemController::class)->name('item.')->prefix('item')->group(function () {
@@ -48,6 +53,7 @@ Route::controller(AddressController::class)->name('address.')->prefix('address')
     Route::post('/order-address', 'storeOrderAddress')->name('storeOrderAddress');
 }); 
 
+// route for login with facebook or github
 Route::get('/sign-in/github', [LoginController::class, 'github']);
 Route::get('/sign-in/github/redirect', [LoginController::class, 'githubRedirect']);
 

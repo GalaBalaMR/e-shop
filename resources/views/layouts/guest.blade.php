@@ -232,7 +232,7 @@
                 <div class="col-lg-3 col-md-6 footer-links">
                     <h4>Our Services</h4>
                     <ul>
-                    <li><i class="bx bx-chevron-right"></i> <a href="#">Web Design</a></li>
+                    <li><i class="bx bx-chevron-right"></i> <a href="/privacy-policy">Privacy Policy</a></li>
                     <li><i class="bx bx-chevron-right"></i> <a href="#">Web Development</a></li>
                     <li><i class="bx bx-chevron-right"></i> <a href="#">Product Management</a></li>
                     <li><i class="bx bx-chevron-right"></i> <a href="#">Marketing</a></li>
@@ -267,6 +267,8 @@
         <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
 
+        {{-- For facebook --}}
+        
 
         <!-- Vendor JS Files -->
         <script src="{{ asset('theme/purecounter/purecounter_vanilla.js') }}"></script>
