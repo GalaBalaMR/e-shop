@@ -82,7 +82,7 @@
 
                             <a href="{{ route('item.show', ['id' => $item->id]) }}" title="More Details"><i class="bx bx-link"></i></a>
 
-                            <form action="{{ route('card.store') }}" method="post" class="d-flex justify-content-center pb-1">
+                            <form action="{{ route('card.store') }}" method="post" class="add-item-form d-flex justify-content-center pb-1">
                                 @csrf
                                 <input type="number" name="item_pcs" class="me-3" id="" min="1" max="{{ $item->storage_pcs }}">
                                 <input type="hidden" name="item_id" value="{{ $item->id }}">
