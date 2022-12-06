@@ -106,7 +106,7 @@
             <a href="{{ route('card.show') }}" class="text-light">
                 <i class="bi bi-cart display-6"></i>
                 @if (session()->has('items_number'))
-                    <span class="position-absolute translate-middle badge rounded-pill bg-danger">
+                    <span class="card_pcs position-absolute translate-middle badge rounded-pill bg-danger" id="card_pcs">
                         {{ session('items_number') }}
                         <span class="visually-hidden">unread messages</span>
                     </span>
@@ -188,8 +188,7 @@
                     </p>
                 </div>
             @endif
-
-
+            
             @yield('main')
         </div>
 
@@ -264,6 +263,7 @@
         </footer><!-- End Footer -->
 
         <div id="preloader"></div>
+        <img src="{{ Storage::url('public/loader.gif') }}" alt="loader" id="loader" class="d-none" style="width: 4rem;position: fixed; z-index: 10; left: 46%; top: 35%">
         <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
 
@@ -271,6 +271,7 @@
         
 
         <!-- Vendor JS Files -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
         <script src="{{ asset('theme/purecounter/purecounter_vanilla.js') }}"></script>
         <script src="{{ asset('theme/aos/aos.js') }}"></script>
         <script src="{{ asset('theme/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
@@ -280,11 +281,9 @@
         <script src="{{ asset('theme/isotope-layout/isotope.pkgd.min.js') }}"></script>
         <script src="{{ asset('theme/swiper/swiper-bundle.min.js') }}"></script>
         <script src="{{ asset('theme/php-email-form/validate.js') }}"></script>
-
-        
-
         
         <script src="{{ asset('js/main.js') }}"></script>
+        <script src="{{ asset('js/script.js') }}"></script>
 
     </body>
 </html>
