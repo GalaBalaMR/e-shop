@@ -15,7 +15,7 @@
                     <h1 class="fw-bold mb-0 text-black">Shopping Cart</h1>
                     <h6 class="mb-0 text-muted">
                         @if (isset($items_number) && $items_number != 0)
-                            Počet položiek: {{ $items_number }}.
+                            Počet položiek: <span class="card_pcs">{{ $items_number }}</span>.
                         @else
                             Nepridal si žiadnu položku.
                         @endif
@@ -25,7 +25,7 @@
 
                     {{-- start item --}}
                     @forelse($items_data as $item)
-                    <div class="row mb-4 d-flex justify-content-between align-items-center">
+                    <div class="row mb-4 d-flex justify-content-between align-items-center" id="card-item-{{ $item['item']['id'] }}">
                         <div class="col-md-2 col-lg-2 col-xl-2">
                             
                             {{-- foreach pictures and show just first --}}
@@ -41,7 +41,7 @@
                             <h6 class="text-muted">item</h6>
                             <h6 class="text-black mb-0">{{ $item['item']['name']}}</h6>
                         </div>
-                        <form class="col-md-3 col-lg-2 col-xl-2 d-flex align-items-start flex-column" action="{{ route('card.update') }}" method="post">
+                        <form class="card_item_update col-md-3 col-lg-2 col-xl-2 d-flex align-items-start flex-column" action="{{ route('card.update') }}" method="post">
                             @csrf
                             <input type="hidden" name="item_id" value="{{ $item['item']['id'] }}">
                             <div class="d-flex mb-1">
@@ -50,7 +50,7 @@
                                 <i class="bi bi-dash"></i>
                                 </button>
     
-                                <input id="form1" min="0" name="item_pcs" value="{{ $item['pcs'] }}" type="number"
+                                <input id="card-pcs-{{ $item['item']['id'] }}" min="0" name="item_pcs" value="{{ $item['pcs'] }}" type="number"
                                 class="form-control form-control-sm no-arrow" />
     
                                 <button class="btn btn-link px-0"
@@ -66,10 +66,10 @@
                             <h6 class="mb-0">Kus za € {{ $item['item']['price'] }}</h6>
                         </div>
                         <div class="col-md-3 col-lg-2 col-xl-2 p-0">
-                            <h6 class="mb-0">Dokopy: € {{ $item['fullPrice'] }}</h6>
+                            <h6 class="mb-0">Dokopy: € <span class="card-item-price-{{ $item['item']['id'] }}">{{ $item['fullPrice'] }}</span></h6>
                         </div>
                         <div class="col-md-1 col-lg-1 col-xl-1">
-                            <form action="{{ route('card.remove') }}" method="post">
+                            <form action="{{ route('card.remove') }}" method="post" class="card_item_delete">
                                 @csrf
                                 <input type="hidden" name="item_id" value="{{ $item['item']['id'] }}">
                                 <button type="submit" class=" btn link-danger decoration-none"><i class="bi bi-trash"></i></button>
@@ -97,21 +97,10 @@
 
                     <div class="d-flex justify-content-between mb-4">
                     
-                        @if(isset($items_number) && $items_number != "1")
+                        @if(isset($items_number) )
 
-                            <h5 class="text-uppercase">{{ $items_number }} položiek.</h5>
-                            <h5>€ {{ $full_price }}</h5>
-
-                        @elseif(isset($items_number) == "1")
-
-                            <h5 class="text-uppercase">{{ $items_number }} položka.</h5>
-                            <h5>€ {{ $full_price }}</h5>
-
-                        @elseif(isset($items_number) == "2" && isset($items_number) == "3" && isset($items_number) == "4")
-
-                            <h5 class="text-uppercase">{{ $items_number }} položky.</h5>
-                            <h5>€ {{ $full_price }}</h5>
-
+                            <h5 class="text-uppercase">Počet v košíku: <span class="card_pcs">{{ $items_number }}</span></h5>
+                            <h5>€ <span class="card-full-price">{{ $full_price }}</span></h5>
                         @else
 
                             <h5 class="text-uppercase">Nie je pridaná žiadna položka.</h5>
@@ -151,7 +140,7 @@
 
                         <div class="d-flex justify-content-between mb-5">
                         <h5 class="text-uppercase">Total price</h5>
-                        <h5>€ {{ $full_price }}</h5>
+                        <h5>€ <span class="card-full-price">{{ $full_price }}</span></h5>
                         </div>
                     
                         @csrf
