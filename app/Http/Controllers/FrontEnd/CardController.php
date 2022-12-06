@@ -151,12 +151,15 @@ class CardController extends Controller
         if($request->ajax())
         {
             return response()->json(['flash' => 'Podarilo sa pridať produkt.',
-                                     'status'=> '1'
+                                     'status'=> '1',
+                                     'items_number' => $items_number
                                     ]);
         };
 
         return back()->with(['info' => 'Podarilo sa pridať produkt.', 'type' => 'success']);
     }
+
+
 
     /* 
     Update item in session items
@@ -192,17 +195,43 @@ class CardController extends Controller
         // push $session_item in the session
         session()->put("items", $session_item);
         // Session::forget('items');
+
         
         Session::save();
+
+        // count  session items
+        $items_number = 0;
+        $full_price = 0;
+        foreach($session_item as $item)
+        {
+            $items_number+= 1;
+           // find model
+           $item_Col = Item::find($item['id']);
+    
+           // sum price
+           $item_price = $item_Col->price;
+           $item_price *= $item['pcs'];
+           $full_price +=  $item_price;
+        }
+
+        $item = Item::find($id);
+        $item_price = $item->price * $pcs;
 
         if($request->ajax())
         {
             return response()->json(['flash' => 'Podarilo sa upraviť produkt.',
-                                     'status'=> '1'
+                                     'status'=> '1',
+                                     'id' => $request->item_id,
+                                     'items_number' => $items_number,
+                                     'full_price' => $full_price,
+                                     'item_price' => $item_price,
+                                     'item_pcs' => $pcs
                                     ]);
         }
         return back()->with(['info' => 'Podarilo sa upraviť produkt.', 'type' => 'success']);
     }
+
+
 
     /* 
     Remove item from card(session('items'))
@@ -224,15 +253,26 @@ class CardController extends Controller
                 unset($session_items[$index]);
             };
         };
+
         session()->put("items", $session_items);
+
+        
         // Session::forget('items');
         
         Session::save();
         // count  session items
         $items_number = 0;
+        $full_price = 0;
         foreach($session_items as $item)
         {
             $items_number+= 1;
+           // find model
+           $item_Col = Item::find($item['id']);
+    
+           // sum price
+           $item_price = $item_Col->price;
+           $item_price *= $item['pcs'];
+           $full_price +=  $item_price;
         }
         
         // after add session just remove and add new session with actual number 
@@ -242,7 +282,10 @@ class CardController extends Controller
         if($request->ajax())
         {
             return response()->json(['flash' => 'Podarilo sa vymazať produkt.',
-                                     'status'=> '1'
+                                     'status'=> '1',
+                                     'id' => $request->item_id,
+                                     'items_number' => $items_number,
+                                     'full_price' => $full_price
                                     ]);
         }
         return back()->with(['info' => 'Podarilo sa vymazať produkt.', 'type' => 'success']);
