@@ -36,7 +36,6 @@ class CustomerOrderController extends Controller
      */
     public function store(Request $request)
     {
-
         $request->validate([
             'delivery' => 'required',
             'items'    => 'required'
