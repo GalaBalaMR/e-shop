@@ -277,8 +277,15 @@
     <div id="preloader"></div>
     <img src="{{ Storage::url('public/loader.gif') }}" alt="loader" id="loader" class="d-none"
         style="width: 4rem;position: fixed; z-index: 10; left: 46%; top: 35%">
-    <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
-            class="bi bi-arrow-up-short"></i></a>
+
+    <a href="#" class="back-to-top d-flex align-items-center justify-content-center">
+        <i class="bi bi-arrow-up-short"></i>
+    </a>
+    <div class="position-fixed start-50 translate-middle w-100" style="top: 10vh">
+        {!! EuCookieConsent::getPopup() !!}
+        {!! EuCookieConsent::getUpdatePopup() !!}
+    </div>
+    {{-- {!! EuCookieConsent::getUpdatePopup() !!} --}}
 
 
     {{-- For facebook --}}

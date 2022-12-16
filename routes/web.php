@@ -57,6 +57,7 @@ Route::controller(AddressController::class)->name('address.')->prefix('address')
 Route::get('/sign-in/github', [LoginController::class, 'github']);
 Route::get('/sign-in/github/redirect', [LoginController::class, 'githubRedirect']);
 
+// Route::post(config('eu-cookie-consent.route'), ['uses' => '\the42coders\EuCookieConsent\Http\Controllers\EuCookieConsentController@saveCookie']);
 /* 
 Routes for user's profile
  */

@@ -45,14 +45,18 @@ class SubCategoryController extends Controller
     {
         $request->validated();
 
-        $img = $request->file('img')->store('public/subcategory');
+        if(!$request->img)
+        {
+            $img = 'public/seed/empty.jpg';
+        }else{
+            $img = $request->file('img')->store('public/subcategory');
+        }
 
         $cat_id = $request->category_id;
 
         SubCategory::create([
             'name' => $request->name,
             'description' => $request->description,
-            'img' => $img,
             'category_id' => $cat_id
         ]);
 

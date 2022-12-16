@@ -3,12 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\Item;
+use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Route;
 use App\Http\Requests\ItemStoreRequest;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Route;
 
 class ItemController extends Controller
 {
@@ -31,7 +32,9 @@ class ItemController extends Controller
      */
     public function create()
     {
-        return view('admin.items.create');
+        $categories = Category::with('subCategories')->get();
+        
+        return view('admin.items.create', compact('categories'));
     }
 
     /**

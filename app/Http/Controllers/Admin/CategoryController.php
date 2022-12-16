@@ -43,7 +43,12 @@ class CategoryController extends Controller
     {
         $request->validated();
 
-        $img = $request->file('img')->store('public/categories');
+        if(!$request->img)
+        {
+            $img = 'public/seed/empty.jpg';
+        }else{
+            $img = $request->file('img')->store('public/categories');
+        }
         Category::create([
             'name' => $request->name,
             'description' => $request->description,
@@ -132,7 +137,7 @@ class CategoryController extends Controller
                                      'status'=> '1'
                                     ]);
         }
-        return back()->with(['info' => 'Podarilo sa vymazať Kategóriu', 'type' => 'success']);
+        return back()->with(['info' => 'Podarilo sa vymazať Kategóriu', 'type' => 'danger']);
 
     }
 }
