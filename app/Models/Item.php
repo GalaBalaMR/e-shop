@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Order;
+use App\Models\Review;
 use App\Models\Category;
 use App\Models\SubCategory;
 use Illuminate\Database\Eloquent\Model;
@@ -27,6 +28,11 @@ class Item extends Model
     public function order()
     {
         return $this->belongsToMany(Order::class);
+    }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
     }
 
     // for decimals in price

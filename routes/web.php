@@ -14,6 +14,7 @@ use App\Http\Controllers\FullCalendarController;
 use App\Http\Controllers\Admin\MessageController;
 use App\Http\Controllers\FrontEnd\CardController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\FrontEnd\ReviewController;
 use App\Http\Controllers\FrontEnd\AddressController;
 use App\Http\Controllers\FrontEnd\WelcomeController;
 use App\Http\Controllers\Admin\SubCategoryController;
@@ -53,7 +54,11 @@ Route::controller(AddressController::class)->name('address.')->prefix('address')
     Route::post('/order-address', 'storeOrderAddress')->name('storeOrderAddress');
 }); 
 
-// route for login with facebook or github
+// Route for reviews
+Route::resource('reviews', ReviewController::class)->middleware('auth');
+
+
+// route for login with github
 Route::get('/sign-in/github', [LoginController::class, 'github']);
 Route::get('/sign-in/github/redirect', [LoginController::class, 'githubRedirect']);
 
