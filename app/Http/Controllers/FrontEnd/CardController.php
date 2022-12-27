@@ -16,7 +16,6 @@ class CardController extends Controller
     // with item from session
     public function showCard()
     {
-
         $pieces = array();
         $prices = array();
         $mix = array();

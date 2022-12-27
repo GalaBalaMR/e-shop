@@ -45,7 +45,7 @@
                              @elseif(isset($item->subCategory))
                                  <li><strong>Podkategória</strong>: {{ $item->subCategory->name }}</li>
                              @endif
-                             <li><strong>Na sklade:</strong>: {{ $item->numbers }}</li>
+                             <li><strong>Na sklade:</strong> {{ $item->storage_pcs }}</li>
                              <li><strong>Pridaný: </strong>: {{ Carbon\Carbon::parse($item->created_at)->diffForHumans() }}
                              </li>
                              <li><strong>Cena:</strong>: {{ $item->price }}</li>
@@ -69,10 +69,12 @@
                              </li>
                              <li>
                                  <form action="{{ route('card.store') }}" method="post"
-                                     class="d-flex justify-content-between">
+                                     class="add-item-form">
                                      @csrf
-                                     <input type="number" name="item_pcs" id="" class="w-25" min="0">
+                                     <input type="number" name="item_pcs" class="me-3" id="" min="1"
+                                         max="{{ $item->storage_pcs }}">
                                      <input type="hidden" name="item_id" value="{{ $item->id }}">
+                                     <input type="hidden" name="storage_pcs" value="{{ $item->storage_pcs }}">
                                      <button type="submit" class="btn btn-warning rounded-pill">Pridať do košíku</button>
                                  </form>
                              </li>
@@ -95,42 +97,53 @@
                              </a>
                          @endif
                          @if ($item->evaluated == false)
-                             <form action="{{ route('reviews.store') }}" method="post"
-                                 id="review-form-{{ $item->id }}" class="review-form col-12 mt-3 d-flex flex-column">
-                                 @csrf
-                                 <textarea name="content" class="col-10 m-auto"></textarea>
-                                 <div class="m-auto m-3">
-                                     <input type="radio" name="stars" class="input-review"
-                                         id="input-review-{{ $item->id }}" value="1">
-                                     <label for="input-review-{{ $item->id }}" class="review-label">
-                                         <i class="bi bi-star-fill"></i>
-                                     </label>
+                             @auth
+                                 <form action="{{ route('reviews.store') }}" method="post"
+                                     id="review-form-{{ $item->id }}" class="review-form col-12 mt-3 d-flex flex-column">
+                                     @csrf
+                                     <textarea name="content" class="col-10 m-auto"></textarea>
+                                     <div class="m-auto m-3">
+                                         <input type="radio" name="stars" class="input-review"
+                                             id="input-review-{{ $item->id }}" value="1">
+                                         <label for="input-review-{{ $item->id }}" class="review-label">
+                                             <i class="bi bi-star-fill"></i>
+                                         </label>
 
-                                     <input type="radio" name="stars" class="input-review"
-                                         id="2-input-review-{{ $item->id }}" value="2">
-                                     <label for="2-input-review-{{ $item->id }}" class="review-label m-auto">
-                                         <i class="bi bi-star-fill"></i>
-                                     </label>
-                                     <input type="radio" name="stars" class="input-review"
-                                         id="3-input-review-{{ $item->id }}" value="3">
-                                     <label for="3-input-review-{{ $item->id }}" class="review-label m-auto">
-                                         <i class="bi bi-star-fill"></i>
-                                     </label>
-                                     <input type="radio" name="stars" class="input-review"
-                                         id="4-input-review-{{ $item->id }}" value="4">
-                                     <label for="4-input-review-{{ $item->id }}" class="review-label m-auto">
-                                         <i class="bi bi-star-fill"></i>
-                                     </label>
-                                     <input type="radio" name="stars" class="input-review"
-                                         id="5-input-review-{{ $item->id }}" value="5">
-                                     <label for="5-input-review-{{ $item->id }}" class="review-label m-auto">
-                                         <i class="bi bi-star-fill"></i>
-                                     </label>
+                                         <input type="radio" name="stars" class="input-review"
+                                             id="2-input-review-{{ $item->id }}" value="2">
+                                         <label for="2-input-review-{{ $item->id }}" class="review-label m-auto">
+                                             <i class="bi bi-star-fill"></i>
+                                         </label>
+                                         <input type="radio" name="stars" class="input-review"
+                                             id="3-input-review-{{ $item->id }}" value="3">
+                                         <label for="3-input-review-{{ $item->id }}" class="review-label m-auto">
+                                             <i class="bi bi-star-fill"></i>
+                                         </label>
+                                         <input type="radio" name="stars" class="input-review"
+                                             id="4-input-review-{{ $item->id }}" value="4">
+                                         <label for="4-input-review-{{ $item->id }}" class="review-label m-auto">
+                                             <i class="bi bi-star-fill"></i>
+                                         </label>
+                                         <input type="radio" name="stars" class="input-review"
+                                             id="5-input-review-{{ $item->id }}" value="5">
+                                         <label for="5-input-review-{{ $item->id }}" class="review-label m-auto">
+                                             <i class="bi bi-star-fill"></i>
+                                         </label>
+                                     </div>
+                                     <input type="hidden" name="item_id" value="{{ $item->id }}">
+                                     <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
+                                     <button class="btn btn-warning col-6 m-auto" type="submit">Ohodnotiť</button>
+                                 </form>
+                             @endauth
+                             @guest
+                                 <div class="review-form" id="review-form-{{ $item->id }}">
+                                     <a class="text-decoration-none link-danger" href="{{ route('login') }}">
+                                         Pre pridanie recenzie musíš byť prihlásený
+                                     </a>
+
                                  </div>
-                                 <input type="hidden" name="item_id" value="{{ $item->id }}">
-                                 <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
-                                 <button class="btn btn-warning col-6 m-auto" type="submit">Ohodnotiť</button>
-                             </form>
+
+                             @endguest
                          @endif
                          <div class="d-flex flex-column">
                              <h2>Recenzie</h2>

@@ -63,10 +63,10 @@ class AddressController extends Controller
             'user_id' => auth()->user()->id
         ]);
 
-        // send it to card show
-        $address_id = $address->id;
+        // // send it to card show
+        // $address_id = $address->id;
 
         // send delivery for card, where with if() make it first option(remembering which kind delivery user choose)
-        return redirect()->route('card.show')->with(['address_id' => $address_id , 'delivery' => $request->delivery]);
+        return redirect()->route('card.show')->with(['delivery' => $request->delivery]);
     }
 }

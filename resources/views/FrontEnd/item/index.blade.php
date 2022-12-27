@@ -46,9 +46,9 @@
 
                 @forelse($items as $item)
                     @if ($item->category_id == null)
-                        <div class="col-lg-4 col-md-6 portfolio-item filter-sub-{{ $item->sub_category_id }}">
+                        <div class="col-lg-4 col-md-6 portfolio-item filter-sub-{{ $item->sub_category_id }}" id="portfolio-item-{{ $item->id }}">
                         @else
-                            <div class="col-lg-4 col-md-6 portfolio-item filter-cat-{{ $item->category_id }}">
+                            <div class="col-lg-4 col-md-6 portfolio-item filter-cat-{{ $item->category_id }}" id="portfolio-item-{{ $item->id }}">
                     @endif
 
                     <div class="portfolio-wrap mb-0">
@@ -92,7 +92,7 @@
                                     class="add-item-form d-flex justify-content-center pb-1">
                                     @csrf
                                     <input type="number" name="item_pcs" class="me-3" id="" min="1"
-                                        max="{{ $item->storage_pcs }}">
+                                        max="{{ $item->storage_pcs }}" value="1">
                                     <input type="hidden" name="item_id" value="{{ $item->id }}">
                                     <input type="hidden" name="storage_pcs" value="{{ $item->storage_pcs }}">
                                     <button type="submit" class="btn btn-warning rounded-pill">Kúpiť</button>
@@ -101,8 +101,9 @@
                                     @if ($item->evaluated == true)
                                         <p>Hodnotil si</p>
                                     @else
-                                        <a href="" class="review-show-link" data-id='{{ $item->id }}'>
-                                            <p>Ohodnotiť?</p>
+                                        <a href="" class="review-show-link text-decoration-none"
+                                            data-id='{{ $item->id }}'>
+                                            <p class="link-warning">Ohodnotiť?</p>
                                         </a>
                                     @endif
 
@@ -129,43 +130,52 @@
                                 </div>
                             </div>
                             @if ($item->evaluated == false)
-                                <form action="{{ route('reviews.store') }}" method="post"
-                                    id="review-form-{{ $item->id }}"
-                                    class="review-form col-12 mt-3 d-flex flex-column">
-                                    @csrf
-                                    <textarea name="content" class="col-10 m-auto"></textarea>
-                                    <div class="m-auto m-3">
-                                        <input type="radio" name="stars" class="input-review"
-                                            id="input-review-{{ $item->id }}" value="1">
-                                        <label for="input-review-{{ $item->id }}" class="review-label">
-                                            <i class="bi bi-star-fill"></i>
-                                        </label>
+                                @auth
+                                    <form action="{{ route('reviews.store') }}" method="post"
+                                        id="review-form-{{ $item->id }}"
+                                        class="review-form col-12 mt-3 d-flex flex-column">
+                                        @csrf
+                                        <textarea name="content" class="col-10 m-auto"></textarea>
+                                        <div class="m-auto m-3">
+                                            <input type="radio" name="stars" class="input-review"
+                                                id="input-review-{{ $item->id }}" value="1">
+                                            <label for="input-review-{{ $item->id }}" class="review-label">
+                                                <i class="bi bi-star-fill"></i>
+                                            </label>
 
-                                        <input type="radio" name="stars" class="input-review"
-                                            id="2-input-review-{{ $item->id }}" value="2">
-                                        <label for="2-input-review-{{ $item->id }}" class="review-label m-auto">
-                                            <i class="bi bi-star-fill"></i>
-                                        </label>
-                                        <input type="radio" name="stars" class="input-review"
-                                            id="3-input-review-{{ $item->id }}" value="3">
-                                        <label for="3-input-review-{{ $item->id }}" class="review-label m-auto">
-                                            <i class="bi bi-star-fill"></i>
-                                        </label>
-                                        <input type="radio" name="stars" class="input-review"
-                                            id="4-input-review-{{ $item->id }}" value="4">
-                                        <label for="4-input-review-{{ $item->id }}" class="review-label m-auto">
-                                            <i class="bi bi-star-fill"></i>
-                                        </label>
-                                        <input type="radio" name="stars" class="input-review"
-                                            id="5-input-review-{{ $item->id }}" value="5">
-                                        <label for="5-input-review-{{ $item->id }}" class="review-label m-auto">
-                                            <i class="bi bi-star-fill"></i>
-                                        </label>
+                                            <input type="radio" name="stars" class="input-review"
+                                                id="2-input-review-{{ $item->id }}" value="2">
+                                            <label for="2-input-review-{{ $item->id }}" class="review-label m-auto">
+                                                <i class="bi bi-star-fill"></i>
+                                            </label>
+                                            <input type="radio" name="stars" class="input-review"
+                                                id="3-input-review-{{ $item->id }}" value="3">
+                                            <label for="3-input-review-{{ $item->id }}" class="review-label m-auto">
+                                                <i class="bi bi-star-fill"></i>
+                                            </label>
+                                            <input type="radio" name="stars" class="input-review"
+                                                id="4-input-review-{{ $item->id }}" value="4">
+                                            <label for="4-input-review-{{ $item->id }}" class="review-label m-auto">
+                                                <i class="bi bi-star-fill"></i>
+                                            </label>
+                                            <input type="radio" name="stars" class="input-review"
+                                                id="5-input-review-{{ $item->id }}" value="5">
+                                            <label for="5-input-review-{{ $item->id }}" class="review-label m-auto">
+                                                <i class="bi bi-star-fill"></i>
+                                            </label>
+                                        </div>
+                                        <input type="hidden" name="item_id" value="{{ $item->id }}">
+                                        <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
+                                        <button class="btn btn-warning col-6 m-auto" type="submit">Ohodnotiť</button>
+                                    </form>
+                                @endauth
+                                @guest
+                                    <div class="review-form" id="review-form-{{ $item->id }}">
+                                        <a class="text-decoration-none" href="{{ route('login') }}"
+                                            style="color: #ffffffb3;">Pre pridanie recenzie musíš byť prihlásený</a>
+
                                     </div>
-                                    <input type="hidden" name="item_id" value="{{ $item->id }}">
-                                    <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
-                                    <button class="btn btn-warning col-6 m-auto" type="submit">Ohodnotiť</button>
-                                </form>
+                                @endguest
                             @endif
                         </div>
                     </div>

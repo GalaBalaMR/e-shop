@@ -24,8 +24,15 @@ class StoreOrderRequest extends FormRequest
     public function rules()
     {
         return [
-            'price' => 'required',
-            'pieces' => 'required',
+            'delivery' => 'required',
+            'items'    => 'required'
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'items.required' => 'V košíku nemáš žiadny produkt.',
         ];
     }
 }

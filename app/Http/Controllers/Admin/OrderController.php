@@ -62,7 +62,16 @@ class OrderController extends Controller
      */
     public function show(Order $order)
     {
-        //
+        $order = Order::find($order->id)->with('items', 'user')->first();
+
+        if($order->other_address === null)
+        {
+            $address = $order->user->address;
+        }else{
+            $address = $order->address;
+        }
+
+        return view('admin.order.show', compact('order', 'address'));
     }
 
     /**

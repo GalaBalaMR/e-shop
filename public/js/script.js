@@ -165,6 +165,7 @@ $(document).ready(function () {
         });
     });
 
+    // show and hide review form on click
     var reviewShowLink = $(".review-show-link");
     reviewForm = $(".review-form");
 

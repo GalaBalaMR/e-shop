@@ -22,8 +22,10 @@ class CustomerItemController extends Controller
                 $stars = [];
                 $evaluated = false;
                 foreach ($item->reviews as $review) {
-                    if (auth()->user()->id === $review->user_id) {
-                        $evaluated = true;
+                    if (auth()->check()) {
+                        if (auth()->user()->id === $review->user_id) {
+                            $evaluated = true;
+                        }
                     }
                     $stars[] = $review->stars;
                 }
@@ -48,8 +50,10 @@ class CustomerItemController extends Controller
             $stars = [];
             $evaluated = false;
             foreach ($item->reviews as $review) {
-                if (auth()->user()->id === $review->user_id) {
-                    $evaluated = true;
+                if (auth()->check()) {
+                    if (auth()->user()->id === $review->user_id) {
+                        $evaluated = true;
+                    }
                 }
                 $stars[] = $review->stars;
             }

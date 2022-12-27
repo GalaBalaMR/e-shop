@@ -54,7 +54,7 @@ class ReviewController extends Controller
                                      'status'=> '1'
                                     ]);
         }
-        return back()->with(['info' => 'Podarilo sa vytvoriť recenziu.', 'type' => 'success']);
+        return redirect()->to('/item#portfolio-item-'. $request->item_id)->with(['info' => 'Podarilo sa vytvoriť recenziu.', 'type' => 'success']);
     }
 
     /**

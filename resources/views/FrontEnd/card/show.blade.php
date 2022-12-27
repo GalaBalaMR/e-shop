@@ -2,7 +2,7 @@
 @section('main')
 
     {{-- Shoping card --}}
-    <section class="h-100 h-custom">
+    <section class="h-100 h-custom" id="card">
         <div class="container py-5 h-100">
             <div class="row d-flex justify-content-center align-items-center h-100">
                 <div class="col-12">
@@ -103,74 +103,165 @@
                                 </div>
                                 <div class="col-lg-4 bg-grey">
                                     <div class="p-5">
-                                        <h3 class="fw-bold mb-5 mt-2 pt-1">Summary</h3>
-                                        <hr class="my-4">
-
-                                        <div class="d-flex justify-content-between mb-4">
-
-                                            @if (isset($items_number))
-                                                <h5 class="text-uppercase">Počet v košíku: <span
-                                                        class="card_pcs">{{ $items_number }}</span></h5>
-                                                <h5>€ <span class="card-full-price">{{ $full_price }}</span></h5>
-                                            @else
-                                                <h5 class="text-uppercase">Nie je pridaná žiadna položka.</h5>
-                                                <h5>€ 0,00</h5>
-                                            @endif
-                                        </div>
-
-                                        <h5 class="text-uppercase mb-3">Shipping</h5>
-
-                                        {{-- form for create order --}}
-                                        <form action="{{ route('orders.store') }}" method="post">
-                                            <div class="mb-4 pb-2">
-                                                <select class="select" name="delivery">
-                                                    @if (session()->has('delivery'))
-                                                        <option value="{{ session()->get('delivery') }}">
-                                                            {{ session()->get('delivery') }}</option>
-                                                    @endif
-                                                    <option value="standard- 5€">Standard-Delivery- €5.00</option>
-                                                    <option value="dhl- 3€">DHL- €4.00</option>
-                                                    <option value="123kurier- 3€">123Kuriér- €3.00</option>
-                                                </select>
-                                            </div>
-
+                                        @auth
+                                            <h3 class="fw-bold mb-5 mt-2 pt-1">Zhrnutie</h3>
                                             <hr class="my-4">
+                                            <div class="d-flex justify-content-between mb-4">
 
-                                            <div class="form-check">
-                                                {{-- if has session address id, check other address --}}
-                                                @if (session()->has('address_id'))
-                                                    <input class="form-check-input" type="checkbox" name="change_address"
-                                                        value="1" id="flexCheckDefault" checked>
+                                                @if (isset($items_number))
+                                                    <h5 class="text-uppercase">Počet v košíku: <span
+                                                            class="card_pcs">{{ $items_number }}</span></h5>
+                                                    <h5>€ <span class="card-full-price">{{ $full_price }}</span></h5>
                                                 @else
-                                                    <input class="form-check-input" type="checkbox" name="change_address"
-                                                        value="1" id="flexCheckDefault">
+                                                    <h5 class="text-uppercase">Nie je pridaná žiadna položka.</h5>
+                                                    <h5>€ 0,00</h5>
                                                 @endif
-                                                <label class="form-check-label" for="flexCheckDefault">
-                                                    Iná adresa
-                                                </label>
                                             </div>
 
-                                            <div class="d-flex justify-content-between mb-5">
-                                                <h5 class="text-uppercase">Total price</h5>
-                                                <h5>€ <span class="card-full-price">{{ $full_price }}</span></h5>
+                                            <h5 class="text-uppercase mb-3">Shipping</h5>
+
+                                            {{-- form for create order --}}
+                                            <form action="{{ route('orders.store') }}" method="post">
+                                                <div class="mb-4 pb-2">
+                                                    <select class="select" name="delivery">
+                                                        @if (session()->has('delivery'))
+                                                            <option value="{{ session()->get('delivery') }}">
+                                                                {{ session()->get('delivery') }}</option>
+                                                        @endif
+                                                        <option value="standard- 5€">Standard-Delivery- €5.00</option>
+                                                        <option value="dhl- 3€">DHL- €4.00</option>
+                                                        <option value="123kurier- 3€">123Kuriér- €3.00</option>
+                                                    </select>
+                                                </div>
+
+                                                <hr class="my-4">
+
+                                                <div class="form-check">
+                                                    {{-- if has session address id, check other address --}}
+                                                    @if (session()->has('address_id'))
+                                                        <input class="form-check-input" type="checkbox" name="change_address"
+                                                            value="1" id="flexCheckDefault" checked>
+                                                    @else
+                                                        <input class="form-check-input" type="checkbox" name="change_address"
+                                                            value="1" id="flexCheckDefault">
+                                                    @endif
+                                                    <label class="form-check-label" for="flexCheckDefault">
+                                                        Iná adresa
+                                                    </label>
+                                                </div>
+
+                                                <div class="d-flex justify-content-between mb-5">
+                                                    <h5 class="text-uppercase">Total price</h5>
+                                                    <h5>€ <span class="card-full-price">{{ $full_price }}</span></h5>
+                                                </div>
+
+                                                @csrf
+                                                @forelse ($items_data as $item)
+                                                    <input type="hidden" name="items[]"
+                                                        value="{{ json_encode(['item_id' => $item['item']['id'], 'item_pcs' => $item['pcs'], 'item_price' => $item['item']['price'], 'item_full_price' => $item['fullPrice']]) }}">
+
+                                                @empty
+                                                @endforelse
+
+                                                @if (isset($address_id))
+                                                    <input type="hidden" name="address_id" value="{{ $address_id }}">
+                                                @endif
+                                                <button type="submit" class="btn btn-dark btn-block btn-lg"
+                                                    data-mdb-ripple-color="dark">Objednať</button>
+                                            </form>
+
+                                        @endauth
+
+                                        @guest
+                                            <h3 class="fw-bold mb-5 mt-2 pt-1">Pre pokračovanie musíš byť prihlásený, allebo
+                                                registrovaný</h3>
+                                            <hr class="my-4">
+                                            <div class="card-body">
+                                                <form method="POST" action="{{ route('register') }}">
+                                                    @csrf
+
+                                                    <div class="row mb-3">
+                                                        <label for="name"
+                                                            class="col-md-4 col-form-label text-md-end">{{ __('Name') }}</label>
+
+                                                        <div class="col-md-6">
+                                                            <input id="name" type="text"
+                                                                class="form-control @error('name') is-invalid @enderror"
+                                                                name="name" value="{{ old('name') }}" required
+                                                                autocomplete="name" autofocus>
+
+                                                            @error('name')
+                                                                <span class="invalid-feedback" role="alert">
+                                                                    <strong>{{ $message }}</strong>
+                                                                </span>
+                                                            @enderror
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row mb-3">
+                                                        <label for="email"
+                                                            class="col-md-4 col-form-label text-md-end">{{ __('Email Address') }}</label>
+
+                                                        <div class="col-md-6">
+                                                            <input id="email" type="email"
+                                                                class="form-control @error('email') is-invalid @enderror"
+                                                                name="email" value="{{ old('email') }}" required
+                                                                autocomplete="email">
+
+                                                            @error('email')
+                                                                <span class="invalid-feedback" role="alert">
+                                                                    <strong>{{ $message }}</strong>
+                                                                </span>
+                                                            @enderror
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row mb-3">
+                                                        <label for="password"
+                                                            class="col-md-4 col-form-label text-md-end">{{ __('Password') }}</label>
+
+                                                        <div class="col-md-6">
+                                                            <input id="password" type="password"
+                                                                class="form-control @error('password') is-invalid @enderror"
+                                                                name="password" required autocomplete="new-password">
+
+                                                            @error('password')
+                                                                <span class="invalid-feedback" role="alert">
+                                                                    <strong>{{ $message }}</strong>
+                                                                </span>
+                                                            @enderror
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row mb-3">
+                                                        <label for="password-confirm"
+                                                            class="col-md-4 col-form-label text-md-end">{{ __('Confirm Password') }}</label>
+
+                                                        <div class="col-md-6">
+                                                            <input id="password-confirm" type="password" class="form-control"
+                                                                name="password_confirmation" required
+                                                                autocomplete="new-password">
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row mb-0">
+                                                        <div class="col-md-6 offset-md-4">
+                                                            <button type="submit" class="btn btn-primary">
+                                                                {{ __('Register') }}
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row mb-0 mt-4">
+                                                        <div class="col-md-6 offset-md-4">
+                                                            <a href="/sign-in/github" class="btn btn-secondary btn-block">
+                                                                prihlásiť sa cez github!
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </form>
                                             </div>
-
-                                            @csrf
-                                            @forelse ($items_data as $item)
-                                                <input type="hidden" name="items[]"
-                                                    value="{{ json_encode(['item_id' => $item['item']['id'], 'item_pcs' => $item['pcs'], 'item_price' => $item['item']['price'], 'item_full_price' => $item['fullPrice']]) }}">
-
-                                            @empty
-                                            @endforelse
-
-                                            @if (isset($address_id))
-                                                <input type="hidden" name="address_id" value="{{ $address_id }}">
-                                            @endif
-                                            <button type="submit" class="btn btn-dark btn-block btn-lg"
-                                                data-mdb-ripple-color="dark">Objednať</button>
-                                        </form>
-
-
+                                            <a href="{{ route('login') }}">Prihlásiť sa</a>
+                                        @endguest
                                     </div>
                                 </div>
                             </div>

@@ -120,6 +120,12 @@
                         {{ session('items_number') }}
                         <span class="visually-hidden">unread messages</span>
                     </span>
+                @else
+                    <span class="card_pcs position-absolute translate-middle badge rounded-pill bg-danger"
+                        id="card_pcs">
+                        0
+                        <span class="visually-hidden">unread messages</span>
+                    </span>
                 @endif
             </a>
         </div>
@@ -177,29 +183,31 @@
     </section><!-- End Hero -->
 
     <div class="container">
-        @if ($errors->any())
-            <div class="alert alert-danger col-8 m-auto mt-3">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
+        <div class="col-12 flex-column" id="messages">
+            @if ($errors->any())
+                <div class="alert alert-danger col-8 m-auto mt-3">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
 
-        @if (session('status'))
-            <div class="alert alert-success col-10 m-auto" id="status" role="alert">
-                {{ session('status') }}
-            </div>
-        @endif
+            @if (session('status'))
+                <div class="alert alert-success col-10 m-auto text-center" id="status" role="alert">
+                    {{ session('status') }}
+                </div>
+            @endif
 
-        @if (session()->has('info'))
-            <div id="flash-message" class="alert alert-{{ session('type') }} col-8 m-auto mt-3">
-                <p>
-                    {{ session('info') }}
-                </p>
-            </div>
-        @endif
+            @if (session()->has('info'))
+                <div id="flash-message" class="alert alert-{{ session('type') }} col-8 m-auto mt-3 text-center">
+                    <p>
+                        {{ session('info') }}
+                    </p>
+                </div>
+            @endif
+        </div>
 
         @yield('main')
     </div>

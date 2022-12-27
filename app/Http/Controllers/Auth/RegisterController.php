@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\Controllers\Controller;
-use App\Mail\UserRegistration;
-use App\Providers\RouteServiceProvider;
 use App\Models\User;
-use Illuminate\Foundation\Auth\RegistersUsers;
+use App\Mail\UserRegistration;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use App\Providers\RouteServiceProvider;
+use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Foundation\Auth\RegistersUsers;
 
 class RegisterController extends Controller
 {
@@ -31,7 +32,20 @@ class RegisterController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = RouteServiceProvider::HOME;
+    // protected $redirectTo = RouteServiceProvider::HOME;
+
+    // if register coming from card, redirect back to card
+    protected function redirectTo()
+    {
+        $fullPrevUrl = url()->previous();
+        $explodeUrl = explode("/", $fullPrevUrl);
+        $explodeUrl = array_slice($explodeUrl, 3);
+        $url =  implode("/", $explodeUrl);
+        if ($url == "card/show") {
+            return '/card/show';
+        }
+        return RouteServiceProvider::HOME;
+    }
 
     /**
      * Create a new controller instance.
@@ -66,18 +80,16 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        
+
         $name = $data['name'];
         $email = $data['email'];
 
-        Mail::to( $email)->send( new UserRegistration($name));
-        
+        Mail::to($email)->send(new UserRegistration($name));
+
         return User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
         ]);
-
-
     }
 }
