@@ -5,6 +5,9 @@ $(document).ready(function () {
     // if is some session status hide it after 3 seconds
     $("#status").delay(3000).hide(3000);
 
+    // if is some session status hide it after 3 seconds
+    $("#errors").delay(3000).hide(3000);
+
     var add_item_form = $(".add-item-form");
     card_pcs = $(".card_pcs");
     loader = $("#loader");
@@ -47,11 +50,25 @@ $(document).ready(function () {
                     $alert.show();
                     $alert.delay(3000).hide(2000);
                     this_form.trigger("reset");
+                    // show small card after add item
+                    $.ajax({
+                        url: '/card/show-small-card',
+                        data: {
+                            txtsearch: $('#small-card-background').val()
+                        },
+                        type: "GET",
+                        dataType: "html",
+                        success: function (data) {
+                            var result = $('<div />').append(data);
+                            $('#ajax-card-div').html(result);
+                        }
+                    });
                 },
             });
         });
     });
 
+    // delete item from card with ajax and hide them
     var card_item_delete = $(".card_item_delete");
     card_full_price = $(".card-full-price");
 
@@ -174,12 +191,46 @@ $(document).ready(function () {
     reviewShowLink.each(function () {
         $(this).on("click", function (event) {
             event.preventDefault();
-            if($('#review-form-' + $(this).data("id")).children().is(':visible'))
-            {
-                $('#review-form-' + $(this).data("id")).children().hide(500);
-            }else{
-                $('#review-form-' + $(this).data("id")).children().show(500);
+            if (
+                $("#review-form-" + $(this).data("id"))
+                    .children()
+                    .is(":visible")
+            ) {
+                $("#review-form-" + $(this).data("id"))
+                    .children()
+                    .hide(500);
+            } else {
+                $("#review-form-" + $(this).data("id"))
+                    .children()
+                    .show(500);
             }
         });
     });
+
+    // Ajax for small card
+
+    var linkSmallCard = $('#show-small-card');
+
+    linkSmallCard.on('click', function(event){
+        event.preventDefault();
+
+        if($('#small-card-background').length){
+            $('#small-card-background').remove();
+        }else{
+            $.ajax({
+                url: $(this).attr("href"),
+                data: {
+                    txtsearch: $('#small-card-background').val()
+                },
+                type: "GET",
+                dataType: "html",
+                success: function (data) {
+                    var result = $('<div />').append(data);
+                    $('#ajax-card-div').html(result);
+                }
+            });
+        }
+    })
+
+
 });

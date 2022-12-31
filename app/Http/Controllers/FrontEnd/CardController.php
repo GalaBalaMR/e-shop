@@ -14,7 +14,75 @@ class CardController extends Controller
 {
     //show card
     // with item from session
-    public function showCard()
+    public function showCard(Request $request)
+    {
+        $pieces = array();
+        $prices = array();
+        $mix = array();
+        $items_data = array();
+        $full_price = 0;
+        $items_number = 0;
+
+        if (session()->has('items')) {
+
+            foreach (session('items') as $item) {
+                // find model
+                $item_Col = Item::find($item['id']);
+
+                // sum price
+                $item_price = $item_Col->price;
+                $item_price *= $item['pcs'];
+
+                /*  
+                change model to array for foreach loop in view
+                other types(object..) alternative has lots of loop which case in error
+                 */
+
+                $item_Col->toArray();
+
+
+                $prices[$item['id']] = $item_price;
+
+                $pieces[$item['id']] = $item['pcs'];
+
+                // make asoc array which send to the view    
+                $items_data[] = [
+                    'item' => $item_Col,
+                    'fullPrice' => $item_price,
+                    'pcs' => $item['pcs']
+                ];
+
+                $full_price +=  $item_price;
+            };
+            // Session::forget('items');
+
+            // for count session items
+            foreach (session('items') as $item) {
+                $items_number += 1;
+            }
+        }
+
+        /* 
+            when make new address, send new address id to view card,
+            where with isset can sent it to order.create
+        */
+        if (session()->has('address_id')) {
+            $address_id = session()->get('address_id');
+            return view('FrontEnd.card.show', compact('items_data', 'full_price', 'items_number', 'address_id'));
+        }
+        // if ($request->ajax()) {
+            // return response()->json([
+            //     'items_data' => $items_data,
+            //     'full_price' => $full_price,
+            //     'items_number' => $items_number,
+            // ]);
+        // };
+
+        return view('FrontEnd.card.show', compact('items_data', 'full_price', 'items_number'));
+    }
+    //show small card
+    // with item from session
+    public function showSmallCard(Request $request)
     {
         $pieces = array();
         $prices = array();
@@ -71,7 +139,7 @@ class CardController extends Controller
             return view('FrontEnd.card.show', compact('items_data', 'full_price', 'items_number', 'address_id'));
         }
 
-        return view('FrontEnd.card.show', compact('items_data', 'full_price', 'items_number'));
+        return view('FrontEnd.card.smallCard', compact('items_data', 'full_price', 'items_number'));
     }
 
     /* 

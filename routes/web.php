@@ -79,6 +79,7 @@ Routes for card, where we use session 'items' for transporting data
  */
 Route::controller(CardController::class)->name('card.')->prefix('card')->group(function () {
     Route::get('/show', 'showCard')->name('show');
+    Route::get('/show-small-card', 'showSmallCard')->name('showSmallCard');
     Route::post('/store', 'storeInSession')->name('store');
     Route::post('/update-item', 'updateItem')->name('update');
     Route::post('/remove-item', 'removeItem')->name('remove');

@@ -33,7 +33,7 @@
                                                     @forelse(explode('|',$item['item']['img']) as $img)
                                                         @if ($loop->first)
                                                             <img src="{{ Storage::url($img) }}" class="img-fluid rounded-3"
-                                                                alt="Cotton T-shirt">
+                                                                alt="Image">
                                                         @endif
                                                     @empty
                                                         <p>Bez obrázku</p>

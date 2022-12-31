@@ -4,22 +4,6 @@
 # General
 --------------------------------------------------------------*/
 
-.input-review{
-  display: none;
-}
-.input-review:checked + .review-label{
-  color: #ffc451; 
-}
-
-#messages{
-  position: fixed;
-  top: 50vh;
-  right: 0%;
-  z-index: 1000;
-  display: flex;
-  justify-content: center;
-}
-
 body {
   font-family: "Open Sans", sans-serif;
   color: #444444;

@@ -33,6 +33,7 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/myStyle.css') }}" rel="stylesheet">
 </head>
 
 <body>
@@ -47,9 +48,9 @@
 
             <nav id="navbar" class="navbar order-last order-lg-0">
                 <ul>
-                    <li><a class="nav-link scrollto active" href="#hero">Home</a></li>
-                    <li><a class="nav-link scrollto" href="#about">About</a></li>
-                    <li><a class="nav-link scrollto " href="#portfolio">Portfolio</a></li>
+                    <li><a class="nav-link scrollto" href="/#hero">Home</a></li>
+                    <li><a class="nav-link scrollto" href="/#about">About</a></li>
+                    <li><a class="nav-link scrollto " href="/#portfolio">Portfolio</a></li>
                     @role('Admin')
                         <li class="dropdown"><a href="#" class="text-decoration-none"><span>Admin</span> <i
                                     class="bi bi-chevron-down"></i></a>
@@ -112,7 +113,7 @@
             <a href="{{ route('item.index') }}" class="get-started-btn scrollto">Do obchodu</a>
 
             {{-- for shopping card --}}
-            <a href="{{ route('card.show') }}" class="text-light">
+            <a id="show-small-card" href="{{ route('card.showSmallCard') }}" class="text-light">
                 <i class="bi bi-cart display-6"></i>
                 @if (session()->has('items_number'))
                     <span class="card_pcs position-absolute translate-middle badge rounded-pill bg-danger"
@@ -185,7 +186,7 @@
     <div class="container">
         <div class="col-12 flex-column" id="messages">
             @if ($errors->any())
-                <div class="alert alert-danger col-8 m-auto mt-3">
+                <div class="alert alert-danger col-8 m-auto mt-3" id="errors">
                     <ul>
                         @foreach ($errors->all() as $error)
                             <li>{{ $error }}</li>
@@ -216,16 +217,16 @@
     <footer id="footer">
         <div class="footer-top">
             <div class="container">
-                <div class="row">
+                <div class="row d-flex justify-content-between">
 
                     <div class="col-lg-3 col-md-6">
                         <div class="footer-info">
-                            <h3>Gp<span>.</span></h3>
+                            <h3>Eshop<span>.</span></h3>
                             <p>
-                                A108 Adam Street <br>
-                                NY 535022, USA<br><br>
-                                <strong>Phone:</strong> +1 5589 55488 55<br>
-                                <strong>Email:</strong> info@example.com<br>
+                                Hlavná 4 <br>
+                                Bratislava<br><br>
+                                <strong>Phone:</strong> <a class="text-decoration-none link-light" href="tel:+421910152552"></a> 0910 152 552<br>
+                                <strong>Email:</strong> <a class="text-decoration-none link-light" href="mailto:matus.recka@gmail.com">matus.recka@gmail.com</a><br>
                             </p>
                             <div class="social-links mt-3">
                                 <a href="#" class="twitter"><i class="bx bxl-twitter"></i></a>
@@ -239,23 +240,11 @@
 
                     <div class="col-lg-2 col-md-6 footer-links">
                         <h4>Useful Links</h4>
-                        <ul>
-                            <li><i class="bx bx-chevron-right"></i> <a href="#">Home</a></li>
-                            <li><i class="bx bx-chevron-right"></i> <a href="#">About us</a></li>
-                            <li><i class="bx bx-chevron-right"></i> <a href="#">Services</a></li>
-                            <li><i class="bx bx-chevron-right"></i> <a href="#">Terms of service</a></li>
-                            <li><i class="bx bx-chevron-right"></i> <a href="#">Privacy policy</a></li>
-                        </ul>
-                    </div>
-
-                    <div class="col-lg-3 col-md-6 footer-links">
-                        <h4>Our Services</h4>
-                        <ul>
-                            <li><i class="bx bx-chevron-right"></i> <a href="/privacy-policy">Privacy Policy</a></li>
-                            <li><i class="bx bx-chevron-right"></i> <a href="#">Web Development</a></li>
-                            <li><i class="bx bx-chevron-right"></i> <a href="#">Product Management</a></li>
-                            <li><i class="bx bx-chevron-right"></i> <a href="#">Marketing</a></li>
-                            <li><i class="bx bx-chevron-right"></i> <a href="#">Graphic Design</a></li>
+                        <ul class="">
+                            <li><i class="bx bx-chevron-right"></i> <a href="/#home">Home</a></li>
+                            <li><i class="bx bx-chevron-right"></i> <a href="/#about">About us</a></li>
+                            <li><i class="bx bx-chevron-right"></i> <a href="/#contact">Kontakt</a></li>
+                            <li><i class="bx bx-chevron-right"></i> <a href="/privacy-policy">Privacy policy</a></li>
                         </ul>
                     </div>
 
@@ -296,7 +285,9 @@
     {{-- {!! EuCookieConsent::getUpdatePopup() !!} --}}
 
 
-    {{-- For facebook --}}
+    {{-- Small card --}}
+    <div id="ajax-card-div"></div>
+
 
 
     <!-- Vendor JS Files -->
