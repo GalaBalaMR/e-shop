@@ -16,7 +16,7 @@ return [
     /*
      * Set the cookie duration in minutes.  Default is 365 * 24 * 60 = 1 Year.
      */
-    'cookie_lifetime' => 0 * 0 * 0,
+    'cookie_lifetime' => 20,
 
     /*
      * Multilanguage support
@@ -73,6 +73,14 @@ return [
                     'xsrf-token' => [
                         'forced' => 'true',
                     ],
+                ],
+            ],
+            'other' => [
+                //Optional: The description defines the key in the translations for the category description
+                'description' => 'other_description',
+                //In this array you can define all the Cookies you want to request form the User
+                'cookies' => [
+                    'facebook' => [],
                 ],
             ],
         ],

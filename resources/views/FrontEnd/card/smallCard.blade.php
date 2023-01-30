@@ -1,10 +1,12 @@
 <div class="small-card-background" id="small-card-background">
+    <div id="overlay"></div>
     <div class="border border-secondary rounded bg-light p-2" id="small-card">
         <div class="d-flex justify-content-around align-content-center flex-wrap">
             <h1 class="m-0 p-0 text-center">Nákupný košík</h1>
             <p class="m-0 p-0 text-center d-flex align-content-center flex-wrap">
                 @if (isset($items_number) && $items_number != 0)
                     Počet položiek: <span class="card_pcs">{{ $items_number }}</span>.
+                    <a class="close-card-link link link-danger text-decoration-none" href="#" id="x-link">X</a>
                 @else
                     Nepridal si žiadnu položku.
                 @endif
@@ -13,70 +15,78 @@
         <hr class="">
         <div id="small-card-items">
             @forelse ($items_data as $item)
-                <div class="small-card-item d-flex justify-content-around mt-2"
-                    id="small-card-item-{{ $item['item']['id'] }}">
-                    @forelse(explode('|',$item['item']['img']) as $img)
-                        @if ($loop->first)
-                            <img src="{{ Storage::url($img) }}" alt="Image">
-                        @endif
-                    @empty
-                        <p>Bez obrázku</p>
-                    @endforelse
-                    <div class="col-3 col-md-2 col-lg-2 col-xl-2">
-                        <h6 class="text-muted">item</h6>
-                        <h6 class="text-black mb-0">{{ $item['item']['name'] }}</h6>
+                @if (!$loop->last)
+                    <div class="small-card-item d-flex justify-content-around mt-2"
+                        id="small-card-item-{{ $item['item']['id'] }}">
+                    @else
+                        <div class="small-card-item d-flex justify-content-around mt-2 mb-3"
+                            id="small-card-item-{{ $item['item']['id'] }}">
+                @endif
+                @forelse(explode('|',$item['item']['img']) as $img)
+                    @if ($loop->first)
+                        <img src="{{ Storage::url($img) }}" alt="Image">
+                    @endif
+                @empty
+                    <p>Bez obrázku</p>
+                @endforelse
+                <div class="col-3 col-md-2 col-lg-2 col-xl-2">
+                    <h6 class="text-muted">item</h6>
+                    <h6 class="text-black mb-0">{{ $item['item']['name'] }}</h6>
+                </div>
+                <form class="card_item_update col-2 col-md-2 col-xl-2 d-flex align-items-start flex-column"
+                    action="{{ route('card.update') }}" method="post">
+                    @csrf
+                    <input type="hidden" name="item_id" value="{{ $item['item']['id'] }}">
+                    <div class="d-flex mb-1">
+                        <button class="btn btn-link px-0"
+                            onclick="this.parentNode.querySelector('input[type=number]').stepDown(); return false">
+                            <i class="bi bi-dash"></i>
+                        </button>
+
+                        <input id="card-pcs-{{ $item['item']['id'] }}" min="0" name="item_pcs"
+                            value="{{ $item['pcs'] }}" type="number" class="form-control form-control-sm no-arrow" />
+
+                        <button class="btn btn-link px-0"
+                            onclick="this.parentNode.querySelector('input[type=number]').stepUp(); return false">
+                            <i class="bi bi-plus"></i>
+                        </button>
                     </div>
-                    <form class="card_item_update col-2 col-md-2 col-xl-2 d-flex align-items-start flex-column"
-                        action="{{ route('card.update') }}" method="post">
+                    <button type="submit" class="d-block mx-auto btn btn-warning rounded-pill p-1 py-0 text-light">
+                        Zmeniť
+                    </button>
+                </form>
+                <div class="col-3 col-md-2 col-lg-2 col-xl-2 p-0">
+                    <h6 class="mb-0">Kus za € {{ $item['item']['price'] }}</h6>
+                </div>
+                <div class="col-3 col-md-2 col-lg-2 col-xl-2 p-0">
+                    <h6 class="mb-0">Dokopy: € <span
+                            class="card-item-price-{{ $item['item']['id'] }}">{{ $item['fullPrice'] }}</span>
+                    </h6>
+                </div>
+                <div class="col-1 col-md-1 col-lg-1 col-xl-1">
+                    <form action="{{ route('card.remove') }}" method="post" class="card_item_delete">
                         @csrf
                         <input type="hidden" name="item_id" value="{{ $item['item']['id'] }}">
-                        <div class="d-flex mb-1">
-                            <button class="btn btn-link px-0"
-                                onclick="this.parentNode.querySelector('input[type=number]').stepDown(); return false">
-                                <i class="bi bi-dash"></i>
-                            </button>
-
-                            <input id="card-pcs-{{ $item['item']['id'] }}" min="0" name="item_pcs"
-                                value="{{ $item['pcs'] }}" type="number"
-                                class="form-control form-control-sm no-arrow" />
-
-                            <button class="btn btn-link px-0"
-                                onclick="this.parentNode.querySelector('input[type=number]').stepUp(); return false">
-                                <i class="bi bi-plus"></i>
-                            </button>
-                        </div>
-                        <button type="submit" class="d-block mx-auto btn btn-warning rounded-pill p-1 py-0 text-light">
-                            Zmeniť
-                        </button>
+                        <button type="submit" class=" btn link-danger decoration-none"><i
+                                class="bi bi-trash"></i></button>
                     </form>
-                    <div class="col-3 col-md-2 col-lg-2 col-xl-2 p-0">
-                        <h6 class="mb-0">Kus za € {{ $item['item']['price'] }}</h6>
-                    </div>
-                    <div class="col-3 col-md-2 col-lg-2 col-xl-2 p-0">
-                        <h6 class="mb-0">Dokopy: € <span
-                                class="card-item-price-{{ $item['item']['id'] }}">{{ $item['fullPrice'] }}</span>
-                        </h6>
-                    </div>
-                    <div class="col-1 col-md-1 col-lg-1 col-xl-1">
-                        <form action="{{ route('card.remove') }}" method="post" class="card_item_delete">
-                            @csrf
-                            <input type="hidden" name="item_id" value="{{ $item['item']['id'] }}">
-                            <button type="submit" class=" btn link-danger decoration-none"><i
-                                    class="bi bi-trash"></i></button>
-                        </form>
-                    </div>
                 </div>
-                <hr>
-
-            @empty
-                <div>
-                    <p>Nepridal si nič do košíku</p>
-                </div>
-            @endforelse
-            <a class="" href="/" id="close-card-link">Zatvoriť</a>
-            <a class="" href="{{ route('card.show') }}" id="close-card-link">Prejsť do pokladne</a>
         </div>
+        @if (!$loop->last)
+            <hr>
+        @endif
+
+    @empty
+        <div>
+            <p>Nepridal si nič do košíku</p>
+        </div>
+        @endforelse
     </div>
+    <div class="d-flex justify-content-between mt-3">
+        <a class="btn btn-warning rounded-pill" href="{{ route('card.show') }}">Prejsť do pokladne</a>
+        <a class="close-card-link link link-danger" href="#" id="close-card-link">Zatvoriť</a>
+    </div>
+</div>
 </div>
 
 <script>
@@ -182,10 +192,14 @@
 
         // Hide small card
 
-        $('#close-card-link').on('click', function(event){
+        $('.close-card-link').on('click', function(event) {
+            event.preventDefault();
+            $('#small-card-background').remove();
+        });
+
+        $('#overlay').on('click', function(event) {
             event.preventDefault();
             $('#small-card-background').remove();
         });
     });
-
 </script>

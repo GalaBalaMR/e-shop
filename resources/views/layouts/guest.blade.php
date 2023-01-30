@@ -34,6 +34,11 @@
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('css/myStyle.css') }}" rel="stylesheet">
+    {{-- @if(EuCookieConsent::canIUse('facebook'))
+        <script>
+            alert('all the crazy facebook script stuff');
+        </script>
+    @endif --}}
 </head>
 
 <body>
@@ -48,7 +53,7 @@
 
             <nav id="navbar" class="navbar order-last order-lg-0">
                 <ul>
-                    <li><a class="nav-link scrollto" href="/#hero">Home</a></li>
+                    <li><a class="nav-link scrollto" href="/">Home</a></li>
                     <li><a class="nav-link scrollto" href="/#about">About</a></li>
                     <li><a class="nav-link scrollto " href="/#portfolio">Portfolio</a></li>
                     @role('Admin')

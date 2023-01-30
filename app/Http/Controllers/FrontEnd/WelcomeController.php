@@ -69,4 +69,9 @@ class WelcomeController extends Controller
         return view('welcome', compact('bestseller_items', 'last_items', 'random_items'));
 
     }
+
+    public function verifyMail()
+    {
+        return view('Auth.verify');
+    }
 }

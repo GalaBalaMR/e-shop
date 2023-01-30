@@ -15,6 +15,7 @@
         "laravel/tinker": "^2.7",
         "laravel/ui": "^3.4",
         "simplesoftwareio/simple-qrcode": "^4.2",
+        "spatie/laravel-analytics": "*",
         "spatie/laravel-permission": "^5.5",
         "the42coders/eu-cookie-consent": "^1.0"
     },

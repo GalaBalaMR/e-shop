@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
@@ -18,6 +19,7 @@ use App\Http\Controllers\FrontEnd\ReviewController;
 use App\Http\Controllers\FrontEnd\AddressController;
 use App\Http\Controllers\FrontEnd\WelcomeController;
 use App\Http\Controllers\Admin\SubCategoryController;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use App\Http\Controllers\FrontEnd\CustomerItemController;
 use App\Http\Controllers\FrontEnd\CustomerOrderController;
 use App\Http\Controllers\FrontEnd\UserController as UserFrontEnd;
@@ -105,6 +107,25 @@ Route::middleware(['role:Admin|Service|Manager'])->name('admin.')->prefix('admin
 
 });
 
-Auth::routes();
+Auth::routes(['verfiy' => true]);
+
+// Route for email verification
+Route::get('/email/verify', function () {
+    return view('auth.verify-email');
+})->middleware('auth')->name('verification.notice');
+
+Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+    $request->fulfill();
+
+    return redirect('/')->with(['info' => 'Podarilo sa overiť mail.', 'type' => 'success']);
+})->middleware(['auth', 'signed'])->name('verification.verify');
+
+Route::get('/registration/verify-email', [WelcomeController::class, 'verifyMail']);
+
+Route::post('/email/verification-notification', function (Request $request) {
+    $request->user()->sendEmailVerificationNotification();
+
+    return back()->with(['info' => 'Odoslali sme ti overovací link.', 'type' => 'success']);
+})->middleware(['auth', 'throttle:6,1'])->name('verification.send');
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');

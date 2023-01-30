@@ -43,6 +43,8 @@ class RegisterController extends Controller
         $url =  implode("/", $explodeUrl);
         if ($url == "card/show") {
             return '/card/show';
+        }elseif( $url == "register" ){
+            return 'registration/verify-email';
         }
         return RouteServiceProvider::HOME;
     }
