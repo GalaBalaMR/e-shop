@@ -78,6 +78,7 @@
                                     </button>
                                 </div>
                             </div>
+                            @if (EuCookieConsent::canIUse('github'))
                             <div class="row mb-0 mt-4">
                                 <div class="col-md-6 offset-md-4">
                                     <a href="/sign-in/github" class="btn btn-secondary btn-block">
@@ -85,6 +86,16 @@
                                     </a>
                                 </div>
                             </div>
+                            @else
+                            <div class="row mb-0 mt-4">
+                                <div class="col-md-6 offset-md-4">
+                                    <a class="btn btn-secondary btn-block">
+                                        prihlásiť sa cez github!
+                                    </a>
+                                </div>
+                            </div>
+                            @endif
+
                         </form>
                     </div>
                 </div>

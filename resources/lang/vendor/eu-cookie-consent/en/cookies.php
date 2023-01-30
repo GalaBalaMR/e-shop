@@ -14,5 +14,5 @@ return [
 
     'session' => 'Session Cookie: PHP využiva cookie na identifikáciu. Bez tohto, stránka nefunguje',
     'xsrf-token' => 'XSRF-Token Cookie: Laravel automaticky vytvára CSRF token pre každú používateľovú session.',
-    'facebook' => 'Facebook dáta, aby sme o tebe vedeli čo najviac :).',
+    'github' => 'Github dáta, pokiaľ chceš využiť registráciu cez github.',
 ];

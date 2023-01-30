@@ -80,7 +80,7 @@ return [
                 'description' => 'other_description',
                 //In this array you can define all the Cookies you want to request form the User
                 'cookies' => [
-                    'facebook' => [],
+                    'github' => [],
                 ],
             ],
         ],
